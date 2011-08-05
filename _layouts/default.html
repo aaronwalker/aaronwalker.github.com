@@ -1,9 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="/shared/css/screen.css" media="screen" rel="stylesheet" type="text/css"> 
+    <link href="/shared/css/pygments.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="/shared/images/favicon.png" rel="fluid-icon" title="aaronwalker:me" /> 
 	<title>{{ page.title }}</title>
 </head>
 <body>
-{{ content }}
+	<div id="main">
+		<div id="header-wrapper"> 
+        	<div id="header" class="basic" > 
+          		<div class="site"> 
+              		<a class="logo" href="/"><img src="/shared/images/logo.png" alt="aaronwalker:me" width="196" height="45"/></a> 
+					<div class="topsearch"> 
+						<ul class="nav logged_out"> 
+							<li><a href="aboutme.html">About Me</a></li> 
+						</ul> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+		<div id="wrapper"> 
+			<div id="content" class="site"> 
+				<div class="wikistyle"> 
+					{{ content }}
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
