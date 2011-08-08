@@ -14,9 +14,14 @@
           		<div class="site"> 
               		<a class="logo" href="/"><img src="/shared/images/logo.png" alt="aaronwalker:me" width="250" height="45"/></a> 
 					<div class="topsearch"> 
-						<ul class="nav logged_out"> 
-							<li><a href="aboutme.html">About Me</a></li> 
-						</ul> 
+						<div id="attr">
+							<ul>
+								<li><a href="/atom.xml" class="ico_rss" original-title="RSS Feed"><span class="hover"></span></a></li>
+								<li><a href="http://twitter.com/aaronwalker" class="ico_twitter" original-title="Twitter"><span class="hover"></span></a></li>
+								<li><a href="http://facebook.com/aaronpwalker" class="ico_facebook" original-title="Facebook"><span class="hover"></span></a></li>
+								<li><a href="http://au.linkedin.com/in/aaronpwalker" class="ico_linkedin" original-title="Linkedin"><span class="hover"></span></a></li>
+							</ul>
+						</div>
 					</div> 
 				</div> 
 			</div> 
@@ -29,9 +34,27 @@
 			</div>
 			<div class="sidebar-shell">
 				<div class="sidebar-module">
-					<h2>Contact</h2>
 					<ul>
-						<li><a href="http://twitter.com/aaronwalker">@aaronwalker</a> on twitter</li>
+						<li><h3>About</h3></li>
+						<li>I'm a Enterprise Java software engineer with a focus on open source Java middleware technologies. I work for <a href="http://www.base2services.com">base2Services</a> a Australian based Software consulting company that specialises in open source technologies.</li>
+					</ul>
+				</div>
+				<div class="sidebar-module">
+					<ul>
+						<li><h3>Recent Posts</h3></li>
+						{% for post in site.posts limit:10 %}
+						<li><a href="{{ post.url }}">{{ post.title truncatewords:3 }}...</a></li>
+						{% endfor %}
+						<li><a href="/archive.html">Archive</a></li>
+					</ul>
+				</div>
+				<div class="sidebar-module">
+					<ul>
+						<li><h3>Projects</h3></li>
+						<li><a href="http://jentrata.org">Jentrata</a> : B2B Gateway</li>
+						<li><a href="http://jbehave.org">JBehave</a> : CDI/Weld maintainer</li>
+						<li><a href="http://github.com/aaronwalker">My Github Projects</a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
