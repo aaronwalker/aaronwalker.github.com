@@ -5,8 +5,8 @@ layout: nil
 <feed xmlns="http://www.w3.org/2005/Atom">
  
  <title>aaronwalker.me</title>
- <link href="http://aaronwalker.me/atom.xml" rel="self"/>
- <link href="http://aaronwalker.me/"/>
+ <link href="http://aaronwalker.cloud/atom.xml" rel="self"/>
+ <link href="http://aaronwalker.cloud/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
  <id>http://aaronwalker.cloud/</id>
  <author>
