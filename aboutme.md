@@ -1,6 +1,6 @@
 ---
 layout: main
-title: aaronwalker:me:about
+title: aaronwalker.cloud >> about
 ---
 
 #TODO:like most things in my life :)
