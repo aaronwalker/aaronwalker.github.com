@@ -1,6 +1,6 @@
 ---
 layout: main
-title: aaronwalker.cloud
+title: aaronwalker.cloud - archive
 ---
 <div id="posts">
 	<ul>
