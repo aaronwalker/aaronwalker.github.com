@@ -6,8 +6,9 @@ title: aaronwalker.cloud
 <div id="nav">
 <a href="/aboutme.html">About Me</a> | <a href="/archive.html">Old Posts</a>
 </div>
-
+<hr/>
 <h1>Recent Posts</h1>
+<hr/>
 <div id="posts">
 	{% for post in site.posts limit:5 %}
 	<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
