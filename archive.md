@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: main
 title: aaronwalker.me - archive
 ---
 <div id="nav">
