@@ -2,7 +2,12 @@
 layout: default
 title: aaronwalker.me - archive
 ---
-
+<div id="nav">
+   <a href="/">Home</a> | <a href="/aboutme.html">About Me</a> | <a href="/archive.html">All Posts</a>
+</div>
+<hr/>
+<br/>
+<br/>
 <div id="posts">
 	<ul>
 	{% for post in site.posts %}
