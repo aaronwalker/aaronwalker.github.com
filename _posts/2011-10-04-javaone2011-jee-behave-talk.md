@@ -1,5 +1,5 @@
 ---
-layout: old_post
+layout: post
 name: javaone2011-jee-behave-talk.
 layout: post
 title: JavaOne 2011 JEE Behave Talk Sides
