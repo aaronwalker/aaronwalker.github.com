@@ -3,7 +3,8 @@ layout: post
 name: osdc-talk-cucumber-java
 layout: post
 title: You've got Cucumber in my Java....and it tastes great!!!
-time: 2011-11-25 18:19:00 +10:00
+date: 2010-11-25 18:19:00 +10:00
+background: /img/bg-old-post.jpg
 ---
 
 

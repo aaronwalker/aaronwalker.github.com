@@ -1,4 +1,26 @@
+
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
 title: aaronwalker.cloud
-description: My random cloud rants
+description: >- 
+  My random cloud rants
+author: Aaron Walker
+baseurl: ""
+url: "https://aaronwalker.cloud"
+twitter_username: aaronwalker
+github_username:  aaronwalker
+
 google_analytics: UA-25009418-1
-theme: jekyll-theme-hacker
+
+background: /img/bg-home.jpg
+
+# Build settings
+theme:  jekyll-theme-clean-blog
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-sitemap

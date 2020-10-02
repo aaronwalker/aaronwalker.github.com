@@ -3,7 +3,8 @@ layout: post
 name: blog-migration-to-github.
 layout: post
 title: Migrated from blogger to github pages
-time: 2011-08-08 16:55:00 +10:00
+date: 2011-08-08 16:55:00 +10:00
+background: /img/bg-old-post.jpg
 ---
 
 
