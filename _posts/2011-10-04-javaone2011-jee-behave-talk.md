@@ -1,22 +1,23 @@
 ---
-layout: post
+layout: old_post
 name: javaone2011-jee-behave-talk.
 layout: post
 title: JavaOne 2011 JEE Behave Talk Sides
-time: 2011-10-04 16:00:00 +10:00
+date: 2011-10-04 16:00:00 +10:00
+background: /img/bg-old-post.jpg
 ---
 
 Here are the slides from my JavaOne 2011 session
 
 Java EE Behave!: Behavior-Driven Development with Java EE
 
-###Abtract
+### Abtract
 
 Behavior-driven development (BDD) is an evolution of test-driven development (TDD). It shifts the vocabulary from being test-based to behavior-based and positions itself as a design philosophy. JBehave is a Java framework for BDD, and this session explores how to write integration tests for your Java EE apps with JBehave. It also demonstrates how to leverage the Context and Dependency Injection (CDI) APIs to implement your tests. 
 
 This session is a must-see for all Java EE developers who want a better way to write integration tests aligned with the intended behavior.
 
-###Demo Code
+### Demo Code
 
 The code from the demo is up on [github](https://github.com/aaronwalker/JavaOne2011)
 
