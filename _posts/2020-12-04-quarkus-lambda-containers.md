@@ -8,7 +8,7 @@ background: /img/bg-berlin.jpg
 
 # How to Deploy a Quarkus Lambda Application using Lambda Containers
 
-At re:Invent 2020 Amazon announced support for deploying and running containers directly to Lambda. Here is a link to the blog post for the announcement https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/. Recently I've been messing around with [Quarkus](https://quarkus.io) which is a relatively new Java framework for build App and has already a pretty impressive eco-system. 
+At re:Invent 2020 Amazon announced support for deploying and running containers directly to Lambda. Here is a link to the blog post for the announcement [https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/). Recently I've been messing around with [Quarkus](https://quarkus.io) which is a relatively new Java framework for build App and has already a pretty impressive eco-system. 
 
 This demo shows how you can packages a Quarkus Lambda App using the new [Lambda containers](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) support. A basically used the [Quarkus - Amazon Lambda](https://quarkus.io/guides/amazon-lambd) guide as the basis for this demo.
 
