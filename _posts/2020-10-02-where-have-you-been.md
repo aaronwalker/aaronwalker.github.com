@@ -4,7 +4,6 @@ name: where-have-you-been
 title: Where have you been......
 date: 2020-10-02 16:00:00 +02:00
 background: /img/bg-berlin.jpg
-visible: 0
 ---
 
 I haven't updated my personal blog for pretty much 9 years to the day so I thought I give it a bit of a reboot. I will use this post to collect together some of the things I've been done over the last 9 years. Really just for my own reference ;)
@@ -25,6 +24,4 @@ I haven't updated my personal blog for pretty much 9 years to the day so I thoug
 
 ## Berlin AWS Community
 
-Since moving to Berlin I taken a active role in the [Berlin AWS User Group](https://www.meetup.com/berlinawsug). The community here is awesome and are very welcoming. We have been pretty luck to get some great speakers. Recently we moved to doing virtual meetups which has opened up the opportunity to attract international speakers and expand our audience outside Berlin. [Septembers meetup](https://www.meetup.com/berlinawsug/events/273280754/) was a fantastic start 2 great presentations. 
-
-<!-- We made a decision to not record the virtual meetups. At first I was unsure about since it would be pretty easy to do. By not recording it I feel it preserves the engagement aspect of an in person meetup. Most of the content presented could be probably be found else where -->
+Since moving to Berlin I taken a active role in the [Berlin AWS User Group](https://www.meetup.com/berlinawsug). The community here is awesome and are very welcoming. We have been pretty luck to get some great speakers. Recently we moved to doing virtual meetups which has opened up the opportunity to attract international speakers and expand our audience outside Berlin. [Septembers meetup](https://www.meetup.com/berlinawsug/events/273280754/) was a fantastic start 2 great presentations.
