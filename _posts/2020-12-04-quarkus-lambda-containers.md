@@ -1,4 +1,3 @@
-
 ---
 layout: post
 name: quarkus-lambda-containers
