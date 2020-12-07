@@ -240,3 +240,5 @@ $ cat out.json
 ## Summary
 
 Without much modification it was possible to create a simple Quarkus Lambda App and package it as a container image. Quarkus gives you the ability to run the app locally but by running in the container gives you the same environment that the app will run in when deployed to Lambda. Another big advantage of using a container is that you aren't restricted by the lambda zip file size limit. 
+
+Follow me on [Twitter](https://twitter.com/aaronwalker) for regular updates and my random thoughts on various topics. If you have questions or remarks, or would just like to get in touch, you can also find me on [LinkedIn](https://www.linkedin.com/in/aaronpwalker/).
