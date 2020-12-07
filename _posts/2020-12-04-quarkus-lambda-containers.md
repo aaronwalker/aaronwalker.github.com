@@ -12,6 +12,9 @@ At re:Invent 2020 Amazon announced support for deploying and running containers 
 
 This demo shows how you can packages a Quarkus Lambda App using the new [Lambda containers](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) support. A basically used the [Quarkus - Amazon Lambda](https://quarkus.io/guides/amazon-lambd) guide as the basis for this demo.
 
+## TL;DR 
+The code for this demo is available on GitHub [https://github.com/base2Services/quarkus-lambda-container-demo](https://github.com/base2Services/quarkus-lambda-container-demo)
+
 ## Prerequisites
 To complete this guide, you need:
 
