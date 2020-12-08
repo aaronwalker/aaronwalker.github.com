@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    How to Deploy a Quarkus Lambda Application using Lambda Containers - aaronwalker.cloud
+    
+  </title>
+
+  <meta name="description" content="How to Deploy a Quarkus Lambda Application using Lambda Containers">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers.html">
+  <link rel="alternate" type="application/rss+xml" title="aaronwalker.cloud" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">aaronwalker.cloud</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/img/bg-berlin.jpg')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>How to Deploy a Quarkus Lambda Application using Lambda Containers</h1>
+            
+            <span class="meta">Posted by
+              <a href="#">Aaron Walker</a>
+              on December 04, 2020 &middot; <span class="reading-time" title="Estimated read time">
+  
+   9 mins  read </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <h1 id="how-to-deploy-a-quarkus-lambda-application-using-lambda-containers">How to Deploy a Quarkus Lambda Application using Lambda Containers</h1>
+
+<p>At re:Invent 2020 Amazon announced support for deploying and running containers directly to Lambda. Here is a link to the blog post for the announcement <a href="https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/">https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/</a>.</p>
+
+<p>Recently, I’ve been messing around with <a href="https://quarkus.io">Quarkus</a> which is a relatively new Java framework for building Apps and already has a pretty impressive eco-system.</p>
+
+<p>This demo shows how you can package a Quarkus Lambda App using the new <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">Lambda containers</a> support. I basically used the <a href="https://quarkus.io/guides/amazon-lambd">Quarkus - Amazon Lambda</a> guide as the basis for this demo.</p>
+
+<h2 id="tldr">TL;DR</h2>
+<p>The code for this demo is available on GitHub <a href="https://github.com/base2Services/quarkus-lambda-container-demo">https://github.com/base2Services/quarkus-lambda-container-demo</a></p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To complete this guide, you need:</p>
+
+<ul>
+  <li>less than 30 minutes</li>
+  <li>JDK 11 (AWS requires JDK 1.8 or 11)</li>
+  <li>Apache Maven 3.6.2+</li>
+  <li>An Amazon AWS account</li>
+  <li>AWS CLI</li>
+  <li>Docker</li>
+</ul>
+
+<p>So lets get started.</p>
+
+<h2 id="creating-the-maven-deployment-project">Creating the Maven Deployment Project</h2>
+
+<p>First, we are going to create a basic Quarkus Lambda app using the Maven archetype.</p>
+
+<p>These steps are taken from the <a href="https://quarkus.io/guides/amazon-lambda#creating-the-maven-deployment-project">Quarkus Lambda guide</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn archetype:generate <span class="se">\</span>
+       <span class="nt">-DarchetypeGroupId</span><span class="o">=</span>io.quarkus <span class="se">\</span>
+       <span class="nt">-DarchetypeArtifactId</span><span class="o">=</span>quarkus-amazon-lambda-archetype <span class="se">\</span>
+       <span class="nt">-DarchetypeVersion</span><span class="o">=</span>1.10.2.Final
+</code></pre></div></div>
+
+<p>This will have created a standard Quarkus Lambda app in a directory based on Maven artifactId you entered. I will use <code class="language-plaintext highlighter-rouge">quarkus-lambda-demo</code> for the rest of the guide.</p>
+
+<p>This generates a simple Quarkus Lambda application with a Test Lambda handler.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.base2services</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.inject.Inject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.inject.Named</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.lambda.runtime.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.lambda.runtime.RequestHandler</span><span class="o">;</span>
+
+<span class="nd">@Named</span><span class="o">(</span><span class="s">"test"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestLambda</span> <span class="kd">implements</span> <span class="nc">RequestHandler</span><span class="o">&lt;</span><span class="nc">InputObject</span><span class="o">,</span> <span class="nc">OutputObject</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Inject</span>
+    <span class="nc">ProcessingService</span> <span class="n">service</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">OutputObject</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">InputObject</span> <span class="n">input</span><span class="o">,</span> <span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="na">process</span><span class="o">(</span><span class="n">input</span><span class="o">).</span><span class="na">setRequestId</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getAwsRequestId</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="add-the-aws-lambda-runtime-emulator-dependency">Add the AWS Lambda Runtime Emulator Dependency</h3>
+
+<p>Add the following dependency to the maven pom dependencies.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>....
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.amazonaws<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>aws-lambda-java-runtime-interface-client<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+....
+</code></pre></div></div>
+
+<h2 id="build-the-demo">Build the demo</h2>
+
+<p>In the quarkus-lambda-demo run Maven.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mvn clean <span class="nb">install</span>
+...
+INFO] <span class="nt">---</span> maven-install-plugin:2.4:install <span class="o">(</span>default-install<span class="o">)</span> @ quarkus-lambda-demo <span class="nt">---</span>
+<span class="o">[</span>INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/target/quarkus-lambda-demo-1.0-SNAPSHOT.jar to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.jar
+<span class="o">[</span>INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/pom.xml to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.pom
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] BUILD SUCCESS
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] Total <span class="nb">time</span>:  13.732 s
+<span class="o">[</span>INFO] Finished at: 2020-12-03T15:10:39+01:00
+</code></pre></div></div>
+
+<p>This will create the required artifacts in the target directory</p>
+
+<h2 id="lambda-function">Lambda Function</h2>
+
+<p>The quarkus-lambda-demo project has by default configured the test handler in the <code class="language-plaintext highlighter-rouge">quarkus-lambda-demo/src/main/resources/application.properties/</code> and we will use this handler for the demo.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>quarkus.lambda.handler=test
+</code></pre></div></div>
+
+<h2 id="building-the-dockerfile">Building the Dockerfile</h2>
+
+<p>Create a Dockerfile in the quarkus-lambda-container-demo using the <code class="language-plaintext highlighter-rouge">public.ecr.aws/lambda/java:8.al2</code> Lambda java8 Amazon Linux 2 runtime container as the base image.</p>
+
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># (1)</span>
+<span class="k">FROM</span><span class="s">  public.ecr.aws/lambda/java:8.al2</span>
+
+<span class="k">ARG</span><span class="s"> APP_NAME=quarkus-lambda-demo</span>
+<span class="k">ARG</span><span class="s"> APP_VERSION=1.0-SNAPSHOT</span>
+
+<span class="c"># (2) Copies artifacts into /function directory</span>
+<span class="k">ADD</span><span class="s"> ${APP_NAME}/target/${APP_NAME}-${APP_VERSION}-runner.jar /var/task/lib/${APP_NAME}.jar</span>
+<span class="k">ADD</span><span class="s"> ${APP_NAME}/target/lib/  /var/task/lib/</span>
+
+<span class="c"># (3) Setting the command to the Quarkus lambda handler</span>
+<span class="k">CMD</span><span class="s"> ["io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest"]</span>
+
+</code></pre></div></div>
+<p>1) Details about the Lambda container images can be found at <a href="https://docs.aws.amazon.com/lambda/latest/dg/images-create.html">https://docs.aws.amazon.com/lambda/latest/dg/images-create.html</a>.</p>
+
+<p>2) Copies the runner and it’s dependencies into the default WORKDIR which is /var/task.</p>
+
+<p>3) Overrides the CMD using the default Quarkus Lambda handler.</p>
+
+<h3 id="then-build-the-docker-image">Then build the Docker image</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker build <span class="nt">-t</span> quarkus/lambda-demo <span class="nb">.</span>
+....
+Successfully built 09666b8a56b0
+Successfully tagged quarkus/lambda-demo:latest
+</code></pre></div></div>
+
+<h3 id="testing-local-using-docker">Testing local using docker</h3>
+
+<p>You can now use this image to test the Lambda execution locally using:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-it</span> <span class="nt">-p</span> 9000:8080 quarkus/lambda-demo:latest
+....
+INFO[0000] <span class="nb">exec</span> <span class="s1">'/var/runtime/bootstrap'</span> <span class="o">(</span><span class="nv">cwd</span><span class="o">=</span>/var/task, <span class="nv">handler</span><span class="o">=)</span>
+....
+</code></pre></div></div>
+
+<p>This starts the AWS Lambda runtime emulator and a web server listening locally on port 9000. You can invoke the test Lambda handler using curl.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XPOST</span> <span class="s2">"http://localhost:9000/2015-03-31/functions/function/invocations"</span> <span class="nt">-d</span> <span class="s1">'{"greeting":"herzlich willkommen", "name":"aaron"}'</span>
+....
+<span class="o">{</span><span class="s2">"result"</span>:<span class="s2">"herzlich willkommen aaron"</span>,<span class="s2">"requestId"</span>:<span class="s2">"d8a48f84-a166-429e-a8ec-d8bea2e7087c"</span><span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="push-the-container-to-ecr">Push the container to ECR</h2>
+
+<p>In order to be able to create a Lambda function from our container image we need to push it to a registry. I will use ECR in the guide.</p>
+
+<p><strong><em>Assumes you have valid AWS credentials configured</em></strong></p>
+
+<h3 id="create-the-ecr-registry">Create the ECR registry</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws ecr create-repository <span class="nt">--repository-name</span> quarkus/lambda-demo <span class="nt">--region</span> eu-central-1
+....
+<span class="o">{</span>
+    <span class="s2">"repository"</span>: <span class="o">{</span>
+        <span class="s2">"repositoryArn"</span>: <span class="s2">"arn:aws:ecr:eu-central-1:&lt;aws-accountid&gt;:repository/quarkus/lambda-demo"</span>,
+        <span class="s2">"registryId"</span>: <span class="s2">"&lt;aws-accountid&gt;"</span>,
+        <span class="s2">"repositoryName"</span>: <span class="s2">"quarkus/lambda-demo"</span>,
+        <span class="s2">"repositoryUri"</span>: <span class="s2">"&lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo"</span>,
+        <span class="s2">"createdAt"</span>: <span class="s2">"2020-12-03T16:10:37+01:00"</span>,
+        <span class="s2">"imageTagMutability"</span>: <span class="s2">"MUTABLE"</span>,
+        <span class="s2">"imageScanningConfiguration"</span>: <span class="o">{</span>
+            <span class="s2">"scanOnPush"</span>: <span class="nb">false</span>
+        <span class="o">}</span>,
+        <span class="s2">"encryptionConfiguration"</span>: <span class="o">{</span>
+            <span class="s2">"encryptionType"</span>: <span class="s2">"AES256"</span>
+        <span class="o">}</span>
+    
+</code></pre></div></div>
+
+<h3 id="tag-and-push-the-container-image-to-ecr">Tag and push the container image to ECR</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws ecr get-login-password <span class="nt">--region</span> eu-central-1 | docker login <span class="nt">--username</span> AWS <span class="nt">--password-stdin</span> &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com
+<span class="nv">$ </span>docker tag quarkus/lambda-demo  &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
+<span class="nv">$ </span>docker push &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
+....
+The push refers to repository <span class="o">[</span>&lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo]
+</code></pre></div></div>
+
+<h3 id="create-the-lambda-function">Create the Lambda function</h3>
+
+<p>Create a SAM template to deploy the function.</p>
+
+<p><strong>sam.container.yaml</strong></p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">AWSTemplateFormatVersion</span><span class="pi">:</span> <span class="s1">'</span><span class="s">2010-09-09'</span>
+<span class="na">Transform</span><span class="pi">:</span> <span class="s">AWS::Serverless-2016-10-31</span>
+<span class="na">Description</span><span class="pi">:</span> <span class="s">AWS Serverless Quarkus - quarkus-lambda-demo-1.0-SNAPSHOT</span>
+
+<span class="na">Parameters</span><span class="pi">:</span>
+  <span class="na">ImageUri</span><span class="pi">:</span>
+    <span class="na">Type</span><span class="pi">:</span> <span class="s">String</span>
+
+<span class="na">Resources</span><span class="pi">:</span>
+  <span class="na">QuarkusLambdaDemo</span><span class="pi">:</span>
+    <span class="na">Type</span><span class="pi">:</span> <span class="s">AWS::Serverless::Function</span>
+    <span class="na">Properties</span><span class="pi">:</span>
+      <span class="na">PackageType</span><span class="pi">:</span> <span class="s">Image</span>
+      <span class="na">ImageUri</span><span class="pi">:</span> <span class="kt">!Ref</span> <span class="s">ImageUri</span>
+      <span class="na">MemorySize</span><span class="pi">:</span> <span class="m">256</span>
+      <span class="na">Timeout</span><span class="pi">:</span> <span class="m">15</span>
+      <span class="na">Policies</span><span class="pi">:</span> <span class="s">AWSLambdaBasicExecutionRole</span>
+
+<span class="na">Outputs</span><span class="pi">:</span>
+  <span class="na">Function</span><span class="pi">:</span>
+    <span class="na">Value</span><span class="pi">:</span> <span class="kt">!Ref</span> <span class="s">QuarkusLambdaDemo</span>
+</code></pre></div></div>
+
+<p>Now deploy the template.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">AWS_REGION</span><span class="o">=</span>eu-central-1
+<span class="nv">AWS_ACCOUNT_ID</span><span class="o">=</span>xxxxxx
+<span class="nv">$ </span>aws cloudformation deploy <span class="se">\</span>
+  <span class="nt">--stack-name</span> quarkus-lambda-demo <span class="se">\</span>
+  <span class="nt">--template-file</span> sam.container.yaml <span class="se">\</span>
+  <span class="nt">--parameter-overrides</span> <span class="nv">ImageUri</span><span class="o">=</span><span class="k">${</span><span class="nv">AWS_ACCOUNT_ID</span><span class="k">}</span>.dkr.ecr.<span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>.amazonaws.com/quarkus/lambda-demo:latest <span class="se">\</span>
+  <span class="nt">--capabilities</span> CAPABILITY_IAM <span class="se">\</span>
+  <span class="nt">--region</span> <span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>
+</code></pre></div></div>
+
+<p>Now invoke the function.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws lambda invoke <span class="se">\</span>
+    <span class="nt">--cli-binary-format</span> raw-in-base64-out <span class="se">\</span>
+    <span class="nt">--function-name</span> QuarkusLambdaDemo <span class="se">\</span>
+    <span class="nt">--payload</span> <span class="s1">'{"greeting":"herzlich willkommen", "name":"aaron"}'</span> <span class="se">\</span>
+    <span class="nt">--region</span> <span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>
+    out.json
+
+<span class="o">{</span>
+    <span class="s2">"StatusCode"</span>: 200,
+    <span class="s2">"ExecutedVersion"</span>: <span class="s2">"</span><span class="nv">$LATEST</span><span class="s2">"</span>
+<span class="o">}</span>
+
+<span class="nv">$ </span><span class="nb">cat </span>out.json
+<span class="o">{</span><span class="s2">"result"</span>:<span class="s2">"herzlich willkommen aaron"</span>,<span class="s2">"requestId"</span>:<span class="s2">"02d6569d-0452-4ed7-bdbe-7e860a8592d8"</span><span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="summary">Summary</h2>
+
+<p>Without much modification it was possible to create a simple Quarkus Lambda App and package it as a container image. Quarkus gives you the ability to run the app locally. But by running it in the container, it gives you the same environment that the app will run in when deployed to Lambda. Another big advantage of using a container is that you aren’t restricted by the Lambda zip file size limit.</p>
+
+<p>Follow me on <a href="https://twitter.com/aaronwalker">Twitter</a> for regular updates and my random thoughts on various topics. If you have questions or remarks, or would just like to get in touch, you can also find me on <a href="https://www.linkedin.com/in/aaronpwalker/">LinkedIn</a>.</p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/2020/10/02/where-have-you-been.html" data-toggle="tooltip" data-placement="top" title="Where have you been......">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Aaron Walker 2020</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25009418-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-25009418-1');
+</script>
+
+
+
+</body>
+
+</html>

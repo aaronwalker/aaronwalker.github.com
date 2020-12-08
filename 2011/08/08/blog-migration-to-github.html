@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Migrated from blogger to github pages - aaronwalker.cloud
+    
+  </title>
+
+  <meta name="description" content="A while back when I was setting up the project site for jentrata.org I started looking around for site hosting options and found github pages and since jentr...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://aaronwalker.cloud/2011/08/08/blog-migration-to-github.html">
+  <link rel="alternate" type="application/rss+xml" title="aaronwalker.cloud" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">aaronwalker.cloud</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/img/bg-old-post.jpg')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Migrated from blogger to github pages</h1>
+            
+            <span class="meta">Posted by
+              <a href="#">Aaron Walker</a>
+              on August 08, 2011 &middot; <span class="reading-time" title="Estimated read time">
+  
+   1 min  read </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>A while back when I was setting up the project site for <a href="http://jentrata.org">jentrata.org</a> I started looking around for site hosting options and found <a href="http://pages.github.com/">github pages</a> and since jentrata was already using github for source code hosting it made sense to use it (and it seems to be what all the cool kids are using).</p>
+
+<p>In my research of github pages I found a few blog posts on migrating which were helpful</p>
+
+<ul>
+  <li>
+    <p><a href="http://www.alexrothenberg.com/2011/01/27/moved-blog-to-jekyll-and-github-pages.html">Moved Blog to Jekyll and GitHub Pages</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/mojombo/jekyll/wiki/Sites">List of sites using github pages</a></p>
+  </li>
+</ul>
+
+<p>I am kind of digging <a href="https://github.com/mojombo/jekyll">jekyll</a> the scripting language behind github pages it’s pretty simple but quite powerful but a lot of the extensions don’t work with github. Which I guess is understandable since it lets you run arbitrary ruby code.</p>
+
+<p>I really hated the blogger interface and it made a good excuse not to blog :). Also I like the idea of treating my blog like code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:aaronwalker/aaronwalker.github.com.git
+cd aaronwalker.github.com.git
+vim _posts/yyyy-mm-dd-new-post.md
+write some random crap that probably nobody will read :)
+git add _posts/yyyy-mm-dd-new-post.md
+git commit -m 'new post'
+git push origin master
+done
+</code></pre></div></div>
+
+<p>I think this lowers the barrier for me…</p>
+
+<p>I’ll put together a more technical post on how I did the migration….</p>
+
+<p>Let git it on!!!! (oh god that’s bad, so very bad)</p>
+
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/2010/11/25/osdc-talk-cucumber-java.html" data-toggle="tooltip" data-placement="top" title="You've got Cucumber in my Java....and it tastes great!!!">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+          <a class="btn btn-primary float-right" href="/2011/10/04/javaone2011-jee-behave-talk.html" data-toggle="tooltip" data-placement="top" title="JavaOne 2011 JEE Behave Talk Sides">Next<span class="d-none d-md-inline">
+              Post</span> &rarr;</a>
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Aaron Walker 2020</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/clean-blog.min.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25009418-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-25009418-1');
+</script>
+
+
+
+</body>
+
+</html>
