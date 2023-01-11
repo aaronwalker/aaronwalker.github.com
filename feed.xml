@@ -1,310 +1,389 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://aaronwalker.cloud/feed.xml" rel="self" type="application/atom+xml" /><link href="https://aaronwalker.cloud/" rel="alternate" type="text/html" /><updated>2020-12-08T21:07:07+00:00</updated><id>https://aaronwalker.cloud/feed.xml</id><title type="html">aaronwalker.cloud</title><subtitle>My random cloud rants | Technology Director @base2Services | AWS APN Ambassador | AWS Community Leader Berlin</subtitle><author><name>Aaron Walker</name></author><entry><title type="html">How to Deploy a Quarkus Lambda Application using Lambda Containers</title><link href="https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers.html" rel="alternate" type="text/html" title="How to Deploy a Quarkus Lambda Application using Lambda Containers" /><published>2020-12-04T12:00:00+00:00</published><updated>2020-12-04T12:00:00+00:00</updated><id>https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers</id><content type="html" xml:base="https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers.html">&lt;h1 id=&quot;how-to-deploy-a-quarkus-lambda-application-using-lambda-containers&quot;&gt;How to Deploy a Quarkus Lambda Application using Lambda Containers&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://aaronwalker.cloud/feed.xml" rel="self" type="application/atom+xml" /><link href="https://aaronwalker.cloud/" rel="alternate" type="text/html" /><updated>2023-01-11T04:57:14+00:00</updated><id>https://aaronwalker.cloud/feed.xml</id><title type="html">aaronwalker.cloud</title><subtitle>My random cloud rants | Technology Director @base2Services | AWS Ambassador | AWS Community Leader Berlin</subtitle><author><name>Aaron Walker</name></author><entry><title type="html">Using ChatGPT to help you write AWS Cloud Infrastructure Code</title><link href="https://aaronwalker.cloud/2022/11/22/write-aws-cloud-infra-code-using-ai.html" rel="alternate" type="text/html" title="Using ChatGPT to help you write AWS Cloud Infrastructure Code" /><published>2022-11-22T00:00:00+00:00</published><updated>2022-11-22T00:00:00+00:00</updated><id>https://aaronwalker.cloud/2022/11/22/write-aws-cloud-infra-code-using%20ai</id><content type="html" xml:base="https://aaronwalker.cloud/2022/11/22/write-aws-cloud-infra-code-using-ai.html"><![CDATA[<h1 id="using-chatgpt-to-help-you-write-aws-cloud-infrastructure-code">Using ChatGPT to help you write AWS Cloud Infrastructure Code</h1>
 
-&lt;p&gt;At re:Invent 2020 Amazon announced support for deploying and running containers directly to Lambda. Here is a link to the blog post for the announcement &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/&quot;&gt;https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/&lt;/a&gt;.&lt;/p&gt;
+<p>ChatGPT, also known as the Generative Pre-trained Transformer, is a state-of-the-art natural language processing model that has been trained on a massive amount of text data. One of the many potential use cases for ChatGPT is building cloud infrastructure with Amazon Web Services (AWS) using cloud formation and chef.</p>
 
-&lt;p&gt;Recently, I’ve been messing around with &lt;a href=&quot;https://quarkus.io&quot;&gt;Quarkus&lt;/a&gt; which is a relatively new Java framework for building Apps and already has a pretty impressive eco-system.&lt;/p&gt;
+<p>AWS CloudFormation is a service that allows you to describe and provision your cloud infrastructure as code. You can use CloudFormation to create, update, and delete AWS resources. By using CloudFormation, you can automate the creation of resources, which can be a time-consuming task when done manually. In this post, we will show you how to use ChatGPT to generate CloudFormation templates.</p>
 
-&lt;p&gt;This demo shows how you can package a Quarkus Lambda App using the new &lt;a href=&quot;https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html&quot;&gt;Lambda containers&lt;/a&gt; support. I basically used the &lt;a href=&quot;https://quarkus.io/guides/amazon-lambd&quot;&gt;Quarkus - Amazon Lambda&lt;/a&gt; guide as the basis for this demo.&lt;/p&gt;
+<p>Here is an example of how you can use ChatGPT to generate a CloudFormation template that creates an S3 bucket:</p>
 
-&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
-&lt;p&gt;The code for this demo is available on GitHub &lt;a href=&quot;https://github.com/base2Services/quarkus-lambda-container-demo&quot;&gt;https://github.com/base2Services/quarkus-lambda-container-demo&lt;/a&gt;&lt;/p&gt;
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">openai</span>
 
-&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;/h2&gt;
-&lt;p&gt;To complete this guide, you need:&lt;/p&gt;
+<span class="c1"># Authenticate with OpenAI
+</span><span class="n">openai</span><span class="p">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s">"YOUR_API_KEY"</span>
 
-&lt;ul&gt;
-  &lt;li&gt;less than 30 minutes&lt;/li&gt;
-  &lt;li&gt;JDK 11 (AWS requires JDK 1.8 or 11)&lt;/li&gt;
-  &lt;li&gt;Apache Maven 3.6.2+&lt;/li&gt;
-  &lt;li&gt;An Amazon AWS account&lt;/li&gt;
-  &lt;li&gt;AWS CLI&lt;/li&gt;
-  &lt;li&gt;Docker&lt;/li&gt;
-&lt;/ul&gt;
+<span class="c1"># Define the prompt for ChatGPT
+</span><span class="n">prompt</span> <span class="o">=</span> <span class="s">'generate a cloud formation template that creates an S3 bucket'</span>
 
-&lt;p&gt;So lets get started.&lt;/p&gt;
+<span class="c1"># Call the OpenAI API
+</span><span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="p">.</span><span class="n">Completion</span><span class="p">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">engine</span><span class="o">=</span><span class="s">'text-davinci-002'</span><span class="p">,</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span>
+<span class="p">)</span>
 
-&lt;h2 id=&quot;creating-the-maven-deployment-project&quot;&gt;Creating the Maven Deployment Project&lt;/h2&gt;
+<span class="c1"># Print the generated CloudFormation template
+</span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s">'choices'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'text'</span><span class="p">])</span>
+</code></pre></div></div>
 
-&lt;p&gt;First, we are going to create a basic Quarkus Lambda app using the Maven archetype.&lt;/p&gt;
+<p>Here is an example of what the output of the above code might look like:</p>
 
-&lt;p&gt;These steps are taken from the &lt;a href=&quot;https://quarkus.io/guides/amazon-lambda#creating-the-maven-deployment-project&quot;&gt;Quarkus Lambda guide&lt;/a&gt;.&lt;/p&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">AWSTemplateFormatVersion</span><span class="pi">:</span> <span class="s1">'</span><span class="s">2010-09-09'</span>
+<span class="na">Resources</span><span class="pi">:</span>
+  <span class="na">MyS3Bucket</span><span class="pi">:</span>
+    <span class="na">Type</span><span class="pi">:</span> <span class="s">AWS::S3::Bucket</span>
+    <span class="na">Properties</span><span class="pi">:</span>
+      <span class="na">BucketName</span><span class="pi">:</span> <span class="s">my-s3-bucket</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn archetype:generate &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-       &lt;span class=&quot;nt&quot;&gt;-DarchetypeGroupId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;io.quarkus &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-       &lt;span class=&quot;nt&quot;&gt;-DarchetypeArtifactId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quarkus-amazon-lambda-archetype &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-       &lt;span class=&quot;nt&quot;&gt;-DarchetypeVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1.10.2.Final
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<p>As you can see, ChatGPT has generated a CloudFormation template that creates an S3 bucket called “my-s3-bucket”.</p>
 
-&lt;p&gt;This will have created a standard Quarkus Lambda app in a directory based on Maven artifactId you entered. I will use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quarkus-lambda-demo&lt;/code&gt; for the rest of the guide.&lt;/p&gt;
+<p>In addition to CloudFormation, you can also use ChatGPT to generate Chef scripts to provision and configure your AWS resources. Chef is a configuration management tool that allows you to automate the deployment and management of your infrastructure.</p>
 
-&lt;p&gt;This generates a simple Quarkus Lambda application with a Test Lambda handler.&lt;/p&gt;
+<p>Here is an example of how you can use ChatGPT to generate a Chef script that installs and configures the Apache web server on an EC2 instance:</p>
 
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;com.base2services&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import openai
 
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject.Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject.Named&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+# Authenticate with OpenAI
+openai.api_key = "YOUR_API_KEY"
 
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;com.amazonaws.services.lambda.runtime.Context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;com.amazonaws.services.lambda.runtime.RequestHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+# Define the prompt for ChatGPT
+prompt = 'generate a chef script that installs and configures the Apache web server on an EC2 instance'
 
-&lt;span class=&quot;nd&quot;&gt;@Named&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestLambda&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RequestHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;InputObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OutputObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+# Call the OpenAI API
+response = openai.Completion.create(
+    engine='text-davinci-002',
+    prompt=prompt
+)
 
-    &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;ProcessingService&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+# Print the generated Chef script
+print(response['choices'][0]['text'])
+</code></pre></div></div>
 
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OutputObject&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handleRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;InputObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Context&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setRequestId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAwsRequestId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<p>Here is an example of what the output of the above code might look like:</p>
 
-&lt;h3 id=&quot;add-the-aws-lambda-runtime-emulator-dependency&quot;&gt;Add the AWS Lambda Runtime Emulator Dependency&lt;/h3&gt;
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package</span> <span class="s1">'httpd'</span>
 
-&lt;p&gt;Add the following dependency to the maven pom dependencies.&lt;/p&gt;
+<span class="n">service</span> <span class="s1">'httpd'</span> <span class="k">do</span>
+  <span class="n">action</span> <span class="p">[</span><span class="ss">:enable</span><span class="p">,</span> <span class="ss">:start</span><span class="p">]</span>
+<span class="k">end</span>
 
-&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;....
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.amazonaws&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;aws-lambda-java-runtime-interface-client&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.0.0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+<span class="n">template</span> <span class="s1">'/etc/httpd/conf/httpd.conf'</span> <span class="k">do</span>
+  <span class="n">source</span> <span class="s1">'httpd.conf.erb'</span>
+  <span class="n">owner</span> <span class="s1">'root'</span>
+  <span class="n">group</span> <span class="s1">'root'</span>
+  <span class="n">mode</span> <span class="s1">'0644'</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>As you can see, ChatGPT has generated a Chef script that installs and configures the Apache web</p>
+
+<p>In conclusion, ChatGTP is a powerful tool that can greatly benefit organizations looking to automate their AWS Cloud infrastructure code generation. Its user-friendly interface and natural language processing capabilities make it easy for even non-technical users to create complex infrastructure code with minimal effort. Additionally, ChatGTP’s ability to generate both CloudFormation and Terraform code allows organizations to choose the tool that best suits their needs. The time and cost savings achieved by using ChatGTP can be significant, allowing organizations to focus on more important tasks and achieve their business goals faster. Overall, ChatGTP is a valuable tool that can help organizations to efficiently and effectively manage their AWS Cloud infrastructure.</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[Using ChatGPT to help you write AWS Cloud Infrastructure Code]]></summary></entry><entry><title type="html">How to Deploy a Quarkus Lambda Application using Lambda Containers</title><link href="https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers.html" rel="alternate" type="text/html" title="How to Deploy a Quarkus Lambda Application using Lambda Containers" /><published>2020-12-04T12:00:00+00:00</published><updated>2020-12-04T12:00:00+00:00</updated><id>https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers</id><content type="html" xml:base="https://aaronwalker.cloud/2020/12/04/quarkus-lambda-containers.html"><![CDATA[<h1 id="how-to-deploy-a-quarkus-lambda-application-using-lambda-containers">How to Deploy a Quarkus Lambda Application using Lambda Containers</h1>
+
+<p>At re:Invent 2020 Amazon announced support for deploying and running containers directly to Lambda. Here is a link to the blog post for the announcement <a href="https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/">https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/</a>.</p>
+
+<p>Recently, I’ve been messing around with <a href="https://quarkus.io">Quarkus</a> which is a relatively new Java framework for building Apps and already has a pretty impressive eco-system.</p>
+
+<p>This demo shows how you can package a Quarkus Lambda App using the new <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html">Lambda containers</a> support. I basically used the <a href="https://quarkus.io/guides/amazon-lambd">Quarkus - Amazon Lambda</a> guide as the basis for this demo.</p>
+
+<h2 id="tldr">TL;DR</h2>
+<p>The code for this demo is available on GitHub <a href="https://github.com/base2Services/quarkus-lambda-container-demo">https://github.com/base2Services/quarkus-lambda-container-demo</a></p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To complete this guide, you need:</p>
+
+<ul>
+  <li>less than 30 minutes</li>
+  <li>JDK 11 (AWS requires JDK 1.8 or 11)</li>
+  <li>Apache Maven 3.6.2+</li>
+  <li>An Amazon AWS account</li>
+  <li>AWS CLI</li>
+  <li>Docker</li>
+</ul>
+
+<p>So lets get started.</p>
+
+<h2 id="creating-the-maven-deployment-project">Creating the Maven Deployment Project</h2>
+
+<p>First, we are going to create a basic Quarkus Lambda app using the Maven archetype.</p>
+
+<p>These steps are taken from the <a href="https://quarkus.io/guides/amazon-lambda#creating-the-maven-deployment-project">Quarkus Lambda guide</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn archetype:generate <span class="se">\</span>
+       <span class="nt">-DarchetypeGroupId</span><span class="o">=</span>io.quarkus <span class="se">\</span>
+       <span class="nt">-DarchetypeArtifactId</span><span class="o">=</span>quarkus-amazon-lambda-archetype <span class="se">\</span>
+       <span class="nt">-DarchetypeVersion</span><span class="o">=</span>1.10.2.Final
+</code></pre></div></div>
+
+<p>This will have created a standard Quarkus Lambda app in a directory based on Maven artifactId you entered. I will use <code class="language-plaintext highlighter-rouge">quarkus-lambda-demo</code> for the rest of the guide.</p>
+
+<p>This generates a simple Quarkus Lambda application with a Test Lambda handler.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.base2services</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.inject.Inject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.inject.Named</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.lambda.runtime.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.amazonaws.services.lambda.runtime.RequestHandler</span><span class="o">;</span>
+
+<span class="nd">@Named</span><span class="o">(</span><span class="s">"test"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestLambda</span> <span class="kd">implements</span> <span class="nc">RequestHandler</span><span class="o">&lt;</span><span class="nc">InputObject</span><span class="o">,</span> <span class="nc">OutputObject</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Inject</span>
+    <span class="nc">ProcessingService</span> <span class="n">service</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">OutputObject</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">InputObject</span> <span class="n">input</span><span class="o">,</span> <span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="na">process</span><span class="o">(</span><span class="n">input</span><span class="o">).</span><span class="na">setRequestId</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getAwsRequestId</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="add-the-aws-lambda-runtime-emulator-dependency">Add the AWS Lambda Runtime Emulator Dependency</h3>
+
+<p>Add the following dependency to the maven pom dependencies.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>....
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.amazonaws<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>aws-lambda-java-runtime-interface-client<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
 ....
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;build-the-demo&quot;&gt;Build the demo&lt;/h2&gt;
+<h2 id="build-the-demo">Build the demo</h2>
 
-&lt;p&gt;In the quarkus-lambda-demo run Maven.&lt;/p&gt;
+<p>In the quarkus-lambda-demo run Maven.</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mvn clean &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mvn clean <span class="nb">install</span>
 ...
-INFO] &lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt; maven-install-plugin:2.4:install &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;default-install&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; @ quarkus-lambda-demo &lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/target/quarkus-lambda-demo-1.0-SNAPSHOT.jar to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.jar
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/pom.xml to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.pom
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] &lt;span class=&quot;nt&quot;&gt;------------------------------------------------------------------------&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] BUILD SUCCESS
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] &lt;span class=&quot;nt&quot;&gt;------------------------------------------------------------------------&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] Total &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;:  13.732 s
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO] Finished at: 2020-12-03T15:10:39+01:00
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+INFO] <span class="nt">---</span> maven-install-plugin:2.4:install <span class="o">(</span>default-install<span class="o">)</span> @ quarkus-lambda-demo <span class="nt">---</span>
+<span class="o">[</span>INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/target/quarkus-lambda-demo-1.0-SNAPSHOT.jar to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.jar
+<span class="o">[</span>INFO] Installing /Users/aaronwalker/Workspaces/aaronwalker/quarkus-lambda-container-demo/quarkus-lambda-demo/pom.xml to /Users/aaronwalker/.m2/repository/com/base2services/quarkus-lambda-demo/1.0-SNAPSHOT/quarkus-lambda-demo-1.0-SNAPSHOT.pom
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] BUILD SUCCESS
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] Total <span class="nb">time</span>:  13.732 s
+<span class="o">[</span>INFO] Finished at: 2020-12-03T15:10:39+01:00
+</code></pre></div></div>
 
-&lt;p&gt;This will create the required artifacts in the target directory&lt;/p&gt;
+<p>This will create the required artifacts in the target directory</p>
 
-&lt;h2 id=&quot;lambda-function&quot;&gt;Lambda Function&lt;/h2&gt;
+<h2 id="lambda-function">Lambda Function</h2>
 
-&lt;p&gt;The quarkus-lambda-demo project has by default configured the test handler in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quarkus-lambda-demo/src/main/resources/application.properties/&lt;/code&gt; and we will use this handler for the demo.&lt;/p&gt;
+<p>The quarkus-lambda-demo project has by default configured the test handler in the <code class="language-plaintext highlighter-rouge">quarkus-lambda-demo/src/main/resources/application.properties/</code> and we will use this handler for the demo.</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;quarkus.lambda.handler=test
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>quarkus.lambda.handler=test
+</code></pre></div></div>
 
-&lt;h2 id=&quot;building-the-dockerfile&quot;&gt;Building the Dockerfile&lt;/h2&gt;
+<h2 id="building-the-dockerfile">Building the Dockerfile</h2>
 
-&lt;p&gt;Create a Dockerfile in the quarkus-lambda-container-demo using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;public.ecr.aws/lambda/java:8.al2&lt;/code&gt; Lambda java8 Amazon Linux 2 runtime container as the base image.&lt;/p&gt;
+<p>Create a Dockerfile in the quarkus-lambda-container-demo using the <code class="language-plaintext highlighter-rouge">public.ecr.aws/lambda/java:8.al2</code> Lambda java8 Amazon Linux 2 runtime container as the base image.</p>
 
-&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# (1)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;  public.ecr.aws/lambda/java:8.al2&lt;/span&gt;
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># (1)</span>
+<span class="k">FROM</span><span class="s">  public.ecr.aws/lambda/java:8.al2</span>
 
-&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; APP_NAME=quarkus-lambda-demo&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; APP_VERSION=1.0-SNAPSHOT&lt;/span&gt;
+<span class="k">ARG</span><span class="s"> APP_NAME=quarkus-lambda-demo</span>
+<span class="k">ARG</span><span class="s"> APP_VERSION=1.0-SNAPSHOT</span>
 
-&lt;span class=&quot;c&quot;&gt;# (2) Copies artifacts into /function directory&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ${APP_NAME}/target/${APP_NAME}-${APP_VERSION}-runner.jar /var/task/lib/${APP_NAME}.jar&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ${APP_NAME}/target/lib/  /var/task/lib/&lt;/span&gt;
+<span class="c"># (2) Copies artifacts into /function directory</span>
+<span class="k">ADD</span><span class="s"> ${APP_NAME}/target/${APP_NAME}-${APP_VERSION}-runner.jar /var/task/lib/${APP_NAME}.jar</span>
+<span class="k">ADD</span><span class="s"> ${APP_NAME}/target/lib/  /var/task/lib/</span>
 
-&lt;span class=&quot;c&quot;&gt;# (3) Setting the command to the Quarkus lambda handler&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest&quot;]&lt;/span&gt;
+<span class="c"># (3) Setting the command to the Quarkus lambda handler</span>
+<span class="k">CMD</span><span class="s"> ["io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest"]</span>
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;1) Details about the Lambda container images can be found at &lt;a href=&quot;https://docs.aws.amazon.com/lambda/latest/dg/images-create.html&quot;&gt;https://docs.aws.amazon.com/lambda/latest/dg/images-create.html&lt;/a&gt;.&lt;/p&gt;
+</code></pre></div></div>
+<p>1) Details about the Lambda container images can be found at <a href="https://docs.aws.amazon.com/lambda/latest/dg/images-create.html">https://docs.aws.amazon.com/lambda/latest/dg/images-create.html</a>.</p>
 
-&lt;p&gt;2) Copies the runner and it’s dependencies into the default WORKDIR which is /var/task.&lt;/p&gt;
+<p>2) Copies the runner and it’s dependencies into the default WORKDIR which is /var/task.</p>
 
-&lt;p&gt;3) Overrides the CMD using the default Quarkus Lambda handler.&lt;/p&gt;
+<p>3) Overrides the CMD using the default Quarkus Lambda handler.</p>
 
-&lt;h3 id=&quot;then-build-the-docker-image&quot;&gt;Then build the Docker image&lt;/h3&gt;
+<h3 id="then-build-the-docker-image">Then build the Docker image</h3>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; quarkus/lambda-demo &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker build <span class="nt">-t</span> quarkus/lambda-demo <span class="nb">.</span>
 ....
 Successfully built 09666b8a56b0
 Successfully tagged quarkus/lambda-demo:latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h3 id=&quot;testing-local-using-docker&quot;&gt;Testing local using docker&lt;/h3&gt;
+<h3 id="testing-local-using-docker">Testing local using docker</h3>
 
-&lt;p&gt;You can now use this image to test the Lambda execution locally using:&lt;/p&gt;
+<p>You can now use this image to test the Lambda execution locally using:</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 9000:8080 quarkus/lambda-demo:latest
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-it</span> <span class="nt">-p</span> 9000:8080 quarkus/lambda-demo:latest
 ....
-INFO[0000] &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/var/runtime/bootstrap'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;cwd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/task, &lt;span class=&quot;nv&quot;&gt;handler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=)&lt;/span&gt;
+INFO[0000] <span class="nb">exec</span> <span class="s1">'/var/runtime/bootstrap'</span> <span class="o">(</span><span class="nv">cwd</span><span class="o">=</span>/var/task, <span class="nv">handler</span><span class="o">=)</span>
 ....
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;This starts the AWS Lambda runtime emulator and a web server listening locally on port 9000. You can invoke the test Lambda handler using curl.&lt;/p&gt;
+<p>This starts the AWS Lambda runtime emulator and a web server listening locally on port 9000. You can invoke the test Lambda handler using curl.</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl &lt;span class=&quot;nt&quot;&gt;-XPOST&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://localhost:9000/2015-03-31/functions/function/invocations&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{&quot;greeting&quot;:&quot;herzlich willkommen&quot;, &quot;name&quot;:&quot;aaron&quot;}'&lt;/span&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-XPOST</span> <span class="s2">"http://localhost:9000/2015-03-31/functions/function/invocations"</span> <span class="nt">-d</span> <span class="s1">'{"greeting":"herzlich willkommen", "name":"aaron"}'</span>
 ....
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;herzlich willkommen aaron&quot;&lt;/span&gt;,&lt;span class=&quot;s2&quot;&gt;&quot;requestId&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;d8a48f84-a166-429e-a8ec-d8bea2e7087c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="o">{</span><span class="s2">"result"</span>:<span class="s2">"herzlich willkommen aaron"</span>,<span class="s2">"requestId"</span>:<span class="s2">"d8a48f84-a166-429e-a8ec-d8bea2e7087c"</span><span class="o">}</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;push-the-container-to-ecr&quot;&gt;Push the container to ECR&lt;/h2&gt;
+<h2 id="push-the-container-to-ecr">Push the container to ECR</h2>
 
-&lt;p&gt;In order to be able to create a Lambda function from our container image we need to push it to a registry. I will use ECR in the guide.&lt;/p&gt;
+<p>In order to be able to create a Lambda function from our container image we need to push it to a registry. I will use ECR in the guide.</p>
 
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;Assumes you have valid AWS credentials configured&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+<p><strong><em>Assumes you have valid AWS credentials configured</em></strong></p>
 
-&lt;h3 id=&quot;create-the-ecr-registry&quot;&gt;Create the ECR registry&lt;/h3&gt;
+<h3 id="create-the-ecr-registry">Create the ECR registry</h3>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;aws ecr create-repository &lt;span class=&quot;nt&quot;&gt;--repository-name&lt;/span&gt; quarkus/lambda-demo &lt;span class=&quot;nt&quot;&gt;--region&lt;/span&gt; eu-central-1
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws ecr create-repository <span class="nt">--repository-name</span> quarkus/lambda-demo <span class="nt">--region</span> eu-central-1
 ....
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;repository&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;s2&quot;&gt;&quot;repositoryArn&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;arn:aws:ecr:eu-central-1:&amp;lt;aws-accountid&amp;gt;:repository/quarkus/lambda-demo&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;registryId&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;aws-accountid&amp;gt;&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;repositoryName&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;quarkus/lambda-demo&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;repositoryUri&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;aws-accountid&amp;gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;createdAt&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;2020-12-03T16:10:37+01:00&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;imageTagMutability&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;MUTABLE&quot;&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;imageScanningConfiguration&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;s2&quot;&gt;&quot;scanOnPush&quot;&lt;/span&gt;: &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
-        &lt;span class=&quot;s2&quot;&gt;&quot;encryptionConfiguration&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;s2&quot;&gt;&quot;encryptionType&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;AES256&quot;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+<span class="o">{</span>
+    <span class="s2">"repository"</span>: <span class="o">{</span>
+        <span class="s2">"repositoryArn"</span>: <span class="s2">"arn:aws:ecr:eu-central-1:&lt;aws-accountid&gt;:repository/quarkus/lambda-demo"</span>,
+        <span class="s2">"registryId"</span>: <span class="s2">"&lt;aws-accountid&gt;"</span>,
+        <span class="s2">"repositoryName"</span>: <span class="s2">"quarkus/lambda-demo"</span>,
+        <span class="s2">"repositoryUri"</span>: <span class="s2">"&lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo"</span>,
+        <span class="s2">"createdAt"</span>: <span class="s2">"2020-12-03T16:10:37+01:00"</span>,
+        <span class="s2">"imageTagMutability"</span>: <span class="s2">"MUTABLE"</span>,
+        <span class="s2">"imageScanningConfiguration"</span>: <span class="o">{</span>
+            <span class="s2">"scanOnPush"</span>: <span class="nb">false</span>
+        <span class="o">}</span>,
+        <span class="s2">"encryptionConfiguration"</span>: <span class="o">{</span>
+            <span class="s2">"encryptionType"</span>: <span class="s2">"AES256"</span>
+        <span class="o">}</span>
     
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h3 id=&quot;tag-and-push-the-container-image-to-ecr&quot;&gt;Tag and push the container image to ECR&lt;/h3&gt;
+<h3 id="tag-and-push-the-container-image-to-ecr">Tag and push the container image to ECR</h3>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;aws ecr get-login-password &lt;span class=&quot;nt&quot;&gt;--region&lt;/span&gt; eu-central-1 | docker login &lt;span class=&quot;nt&quot;&gt;--username&lt;/span&gt; AWS &lt;span class=&quot;nt&quot;&gt;--password-stdin&lt;/span&gt; &amp;lt;aws-accountid&amp;gt;.dkr.ecr.eu-central-1.amazonaws.com
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker tag quarkus/lambda-demo  &amp;lt;aws-accountid&amp;gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker push &amp;lt;aws-accountid&amp;gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws ecr get-login-password <span class="nt">--region</span> eu-central-1 | docker login <span class="nt">--username</span> AWS <span class="nt">--password-stdin</span> &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com
+<span class="nv">$ </span>docker tag quarkus/lambda-demo  &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
+<span class="nv">$ </span>docker push &lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo
 ....
-The push refers to repository &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&amp;lt;aws-accountid&amp;gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+The push refers to repository <span class="o">[</span>&lt;aws-accountid&gt;.dkr.ecr.eu-central-1.amazonaws.com/quarkus/lambda-demo]
+</code></pre></div></div>
 
-&lt;h3 id=&quot;create-the-lambda-function&quot;&gt;Create the Lambda function&lt;/h3&gt;
+<h3 id="create-the-lambda-function">Create the Lambda function</h3>
 
-&lt;p&gt;Create a SAM template to deploy the function.&lt;/p&gt;
+<p>Create a SAM template to deploy the function.</p>
 
-&lt;p&gt;&lt;strong&gt;sam.container.yaml&lt;/strong&gt;&lt;/p&gt;
+<p><strong>sam.container.yaml</strong></p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;AWSTemplateFormatVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2010-09-09'&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Transform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;AWS::Serverless-2016-10-31&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;AWS Serverless Quarkus - quarkus-lambda-demo-1.0-SNAPSHOT&lt;/span&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">AWSTemplateFormatVersion</span><span class="pi">:</span> <span class="s1">'</span><span class="s">2010-09-09'</span>
+<span class="na">Transform</span><span class="pi">:</span> <span class="s">AWS::Serverless-2016-10-31</span>
+<span class="na">Description</span><span class="pi">:</span> <span class="s">AWS Serverless Quarkus - quarkus-lambda-demo-1.0-SNAPSHOT</span>
 
-&lt;span class=&quot;na&quot;&gt;Parameters&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;ImageUri&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;String&lt;/span&gt;
+<span class="na">Parameters</span><span class="pi">:</span>
+  <span class="na">ImageUri</span><span class="pi">:</span>
+    <span class="na">Type</span><span class="pi">:</span> <span class="s">String</span>
 
-&lt;span class=&quot;na&quot;&gt;Resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;QuarkusLambdaDemo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;AWS::Serverless::Function&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;Properties&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;PackageType&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Image&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;ImageUri&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;!Ref&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ImageUri&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;MemorySize&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;256&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;Timeout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;15&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;Policies&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;AWSLambdaBasicExecutionRole&lt;/span&gt;
+<span class="na">Resources</span><span class="pi">:</span>
+  <span class="na">QuarkusLambdaDemo</span><span class="pi">:</span>
+    <span class="na">Type</span><span class="pi">:</span> <span class="s">AWS::Serverless::Function</span>
+    <span class="na">Properties</span><span class="pi">:</span>
+      <span class="na">PackageType</span><span class="pi">:</span> <span class="s">Image</span>
+      <span class="na">ImageUri</span><span class="pi">:</span> <span class="kt">!Ref</span> <span class="s">ImageUri</span>
+      <span class="na">MemorySize</span><span class="pi">:</span> <span class="m">256</span>
+      <span class="na">Timeout</span><span class="pi">:</span> <span class="m">15</span>
+      <span class="na">Policies</span><span class="pi">:</span> <span class="s">AWSLambdaBasicExecutionRole</span>
 
-&lt;span class=&quot;na&quot;&gt;Outputs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;Value&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;!Ref&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;QuarkusLambdaDemo&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="na">Outputs</span><span class="pi">:</span>
+  <span class="na">Function</span><span class="pi">:</span>
+    <span class="na">Value</span><span class="pi">:</span> <span class="kt">!Ref</span> <span class="s">QuarkusLambdaDemo</span>
+</code></pre></div></div>
 
-&lt;p&gt;Now deploy the template.&lt;/p&gt;
+<p>Now deploy the template.</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;AWS_REGION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;eu-central-1
-&lt;span class=&quot;nv&quot;&gt;AWS_ACCOUNT_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;xxxxxx
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;aws cloudformation deploy &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;--stack-name&lt;/span&gt; quarkus-lambda-demo &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;--template-file&lt;/span&gt; sam.container.yaml &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;--parameter-overrides&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ImageUri&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_ACCOUNT_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;.dkr.ecr.&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_REGION&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;.amazonaws.com/quarkus/lambda-demo:latest &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;--capabilities&lt;/span&gt; CAPABILITY_IAM &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;--region&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_REGION&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">AWS_REGION</span><span class="o">=</span>eu-central-1
+<span class="nv">AWS_ACCOUNT_ID</span><span class="o">=</span>xxxxxx
+<span class="nv">$ </span>aws cloudformation deploy <span class="se">\</span>
+  <span class="nt">--stack-name</span> quarkus-lambda-demo <span class="se">\</span>
+  <span class="nt">--template-file</span> sam.container.yaml <span class="se">\</span>
+  <span class="nt">--parameter-overrides</span> <span class="nv">ImageUri</span><span class="o">=</span><span class="k">${</span><span class="nv">AWS_ACCOUNT_ID</span><span class="k">}</span>.dkr.ecr.<span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>.amazonaws.com/quarkus/lambda-demo:latest <span class="se">\</span>
+  <span class="nt">--capabilities</span> CAPABILITY_IAM <span class="se">\</span>
+  <span class="nt">--region</span> <span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;Now invoke the function.&lt;/p&gt;
+<p>Now invoke the function.</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;aws lambda invoke &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;--cli-binary-format&lt;/span&gt; raw-in-base64-out &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;--function-name&lt;/span&gt; QuarkusLambdaDemo &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;--payload&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{&quot;greeting&quot;:&quot;herzlich willkommen&quot;, &quot;name&quot;:&quot;aaron&quot;}'&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;--region&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_REGION&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws lambda invoke <span class="se">\</span>
+    <span class="nt">--cli-binary-format</span> raw-in-base64-out <span class="se">\</span>
+    <span class="nt">--function-name</span> QuarkusLambdaDemo <span class="se">\</span>
+    <span class="nt">--payload</span> <span class="s1">'{"greeting":"herzlich willkommen", "name":"aaron"}'</span> <span class="se">\</span>
+    <span class="nt">--region</span> <span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span>
     out.json
 
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;StatusCode&quot;&lt;/span&gt;: 200,
-    &lt;span class=&quot;s2&quot;&gt;&quot;ExecutedVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$LATEST&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+<span class="o">{</span>
+    <span class="s2">"StatusCode"</span>: 200,
+    <span class="s2">"ExecutedVersion"</span>: <span class="s2">"</span><span class="nv">$LATEST</span><span class="s2">"</span>
+<span class="o">}</span>
 
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;out.json
-&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;herzlich willkommen aaron&quot;&lt;/span&gt;,&lt;span class=&quot;s2&quot;&gt;&quot;requestId&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;02d6569d-0452-4ed7-bdbe-7e860a8592d8&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="nv">$ </span><span class="nb">cat </span>out.json
+<span class="o">{</span><span class="s2">"result"</span>:<span class="s2">"herzlich willkommen aaron"</span>,<span class="s2">"requestId"</span>:<span class="s2">"02d6569d-0452-4ed7-bdbe-7e860a8592d8"</span><span class="o">}</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+<h2 id="summary">Summary</h2>
 
-&lt;p&gt;Without much modification it was possible to create a simple Quarkus Lambda App and package it as a container image. Quarkus gives you the ability to run the app locally. But by running it in the container, it gives you the same environment that the app will run in when deployed to Lambda. Another big advantage of using a container is that you aren’t restricted by the Lambda zip file size limit.&lt;/p&gt;
+<p>Without much modification it was possible to create a simple Quarkus Lambda App and package it as a container image. Quarkus gives you the ability to run the app locally. But by running it in the container, it gives you the same environment that the app will run in when deployed to Lambda. Another big advantage of using a container is that you aren’t restricted by the Lambda zip file size limit.</p>
 
-&lt;p&gt;Follow me on &lt;a href=&quot;https://twitter.com/aaronwalker&quot;&gt;Twitter&lt;/a&gt; for regular updates and my random thoughts on various topics. If you have questions or remarks, or would just like to get in touch, you can also find me on &lt;a href=&quot;https://www.linkedin.com/in/aaronpwalker/&quot;&gt;LinkedIn&lt;/a&gt;.&lt;/p&gt;</content><author><name>Aaron Walker</name></author><summary type="html">How to Deploy a Quarkus Lambda Application using Lambda Containers</summary></entry><entry><title type="html">Where have you been……</title><link href="https://aaronwalker.cloud/2020/10/02/where-have-you-been.html" rel="alternate" type="text/html" title="Where have you been……" /><published>2020-10-02T14:00:00+00:00</published><updated>2020-10-02T14:00:00+00:00</updated><id>https://aaronwalker.cloud/2020/10/02/where-have-you-been</id><content type="html" xml:base="https://aaronwalker.cloud/2020/10/02/where-have-you-been.html">&lt;p&gt;I haven’t updated my personal blog for pretty much 9 years to the day so I thought I give it a bit of a reboot. I will use this post to collect together some of the things I’ve been done over the last 9 years. Really just for my own reference ;)&lt;/p&gt;
+<p>Follow me on <a href="https://twitter.com/aaronwalker">Twitter</a> for regular updates and my random thoughts on various topics. If you have questions or remarks, or would just like to get in touch, you can also find me on <a href="https://www.linkedin.com/in/aaronpwalker/">LinkedIn</a>.</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[How to Deploy a Quarkus Lambda Application using Lambda Containers]]></summary></entry><entry><title type="html">Where have you been……</title><link href="https://aaronwalker.cloud/2020/10/02/where-have-you-been.html" rel="alternate" type="text/html" title="Where have you been……" /><published>2020-10-02T14:00:00+00:00</published><updated>2020-10-02T14:00:00+00:00</updated><id>https://aaronwalker.cloud/2020/10/02/where-have-you-been</id><content type="html" xml:base="https://aaronwalker.cloud/2020/10/02/where-have-you-been.html"><![CDATA[<p>I haven’t updated my personal blog for pretty much 9 years to the day so I thought I give it a bit of a reboot. I will use this post to collect together some of the things I’ve been done over the last 9 years. Really just for my own reference ;)</p>
 
-&lt;h2 id=&quot;talks&quot;&gt;Talks&lt;/h2&gt;
+<h2 id="talks">Talks</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker/enabling-yourdev-opsculturewith-aws&quot;&gt;Enabling your DevOps culture with AWS&lt;/a&gt; - AWS User Group Sydney - Dec 4, 2013&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker/berlin-devops-meetup-20180712&quot;&gt;Start Building CI/CD as Code The 7 Lessons Learnt from Deploying and Managing 100s of CI Environments&lt;/a&gt; - Berlin DevOps Meetup - Jul 7, 2018&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker/meetup-aws-berlin-july-2018-youre-writing-way-too-much-cloudformation&quot;&gt;You’re writing WAY too much CloudFormation&lt;/a&gt; - Berlin AWS User Group - Jul 2018&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker/meetup-aws-berlin-october-2018-account-management-and-aws-organizations&quot;&gt;Account Management and AWS Organizations&lt;/a&gt; - Berlin AWS User Group - Oct 2018&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=kbWeS-2LBo8&quot;&gt;Reusable Serverless CI/CD pipelines with Jenkins&lt;/a&gt; - Berlin CI/CD Meetup - Jan 2019&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker/doyoureallyknowwhatis-goingoninyourawsaccounts&quot;&gt;Do you REALLY know what is going on in your AWS Accounts?&lt;/a&gt; - AWS Community Day Germany 2019&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>
+    <p><a href="https://www.slideshare.net/aaronpwalker/enabling-yourdev-opsculturewith-aws">Enabling your DevOps culture with AWS</a> - AWS User Group Sydney - Dec 4, 2013</p>
+  </li>
+  <li>
+    <p><a href="https://www.slideshare.net/aaronpwalker/berlin-devops-meetup-20180712">Start Building CI/CD as Code The 7 Lessons Learnt from Deploying and Managing 100s of CI Environments</a> - Berlin DevOps Meetup - Jul 7, 2018</p>
+  </li>
+  <li>
+    <p><a href="https://www.slideshare.net/aaronpwalker/meetup-aws-berlin-july-2018-youre-writing-way-too-much-cloudformation">You’re writing WAY too much CloudFormation</a> - Berlin AWS User Group - Jul 2018</p>
+  </li>
+  <li>
+    <p><a href="https://www.slideshare.net/aaronpwalker/meetup-aws-berlin-october-2018-account-management-and-aws-organizations">Account Management and AWS Organizations</a> - Berlin AWS User Group - Oct 2018</p>
+  </li>
+  <li>
+    <p><a href="https://www.youtube.com/watch?v=kbWeS-2LBo8">Reusable Serverless CI/CD pipelines with Jenkins</a> - Berlin CI/CD Meetup - Jan 2019</p>
+  </li>
+  <li>
+    <p><a href="https://www.slideshare.net/aaronpwalker/doyoureallyknowwhatis-goingoninyourawsaccounts">Do you REALLY know what is going on in your AWS Accounts?</a> - AWS Community Day Germany 2019</p>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;berlin-aws-community&quot;&gt;Berlin AWS Community&lt;/h2&gt;
+<h2 id="berlin-aws-community">Berlin AWS Community</h2>
 
-&lt;p&gt;Since moving to Berlin I taken a active role in the &lt;a href=&quot;https://www.meetup.com/berlinawsug&quot;&gt;Berlin AWS User Group&lt;/a&gt;. The community here is awesome and are very welcoming. We have been pretty luck to get some great speakers. Recently we moved to doing virtual meetups which has opened up the opportunity to attract international speakers and expand our audience outside Berlin. &lt;a href=&quot;https://www.meetup.com/berlinawsug/events/273280754/&quot;&gt;Septembers meetup&lt;/a&gt; was a fantastic start 2 great presentations.&lt;/p&gt;</content><author><name>Aaron Walker</name></author><summary type="html">I haven’t updated my personal blog for pretty much 9 years to the day so I thought I give it a bit of a reboot. I will use this post to collect together some of the things I’ve been done over the last 9 years. Really just for my own reference ;)</summary></entry><entry><title type="html">JavaOne 2011 JEE Behave Talk Sides</title><link href="https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk.html" rel="alternate" type="text/html" title="JavaOne 2011 JEE Behave Talk Sides" /><published>2011-10-04T06:00:00+00:00</published><updated>2011-10-04T06:00:00+00:00</updated><id>https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk</id><content type="html" xml:base="https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk.html">&lt;p&gt;Here are the slides from my JavaOne 2011 session&lt;/p&gt;
+<p>Since moving to Berlin I taken a active role in the <a href="https://www.meetup.com/berlinawsug">Berlin AWS User Group</a>. The community here is awesome and are very welcoming. We have been pretty luck to get some great speakers. Recently we moved to doing virtual meetups which has opened up the opportunity to attract international speakers and expand our audience outside Berlin. <a href="https://www.meetup.com/berlinawsug/events/273280754/">Septembers meetup</a> was a fantastic start 2 great presentations.</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[I haven’t updated my personal blog for pretty much 9 years to the day so I thought I give it a bit of a reboot. I will use this post to collect together some of the things I’ve been done over the last 9 years. Really just for my own reference ;)]]></summary></entry><entry><title type="html">JavaOne 2011 JEE Behave Talk Sides</title><link href="https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk.html" rel="alternate" type="text/html" title="JavaOne 2011 JEE Behave Talk Sides" /><published>2011-10-04T06:00:00+00:00</published><updated>2011-10-04T06:00:00+00:00</updated><id>https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk</id><content type="html" xml:base="https://aaronwalker.cloud/2011/10/04/javaone2011-jee-behave-talk.html"><![CDATA[<p>Here are the slides from my JavaOne 2011 session</p>
 
-&lt;p&gt;Java EE Behave!: Behavior-Driven Development with Java EE&lt;/p&gt;
+<p>Java EE Behave!: Behavior-Driven Development with Java EE</p>
 
-&lt;h3 id=&quot;abtract&quot;&gt;Abtract&lt;/h3&gt;
+<h3 id="abtract">Abtract</h3>
 
-&lt;p&gt;Behavior-driven development (BDD) is an evolution of test-driven development (TDD). It shifts the vocabulary from being test-based to behavior-based and positions itself as a design philosophy. JBehave is a Java framework for BDD, and this session explores how to write integration tests for your Java EE apps with JBehave. It also demonstrates how to leverage the Context and Dependency Injection (CDI) APIs to implement your tests.&lt;/p&gt;
+<p>Behavior-driven development (BDD) is an evolution of test-driven development (TDD). It shifts the vocabulary from being test-based to behavior-based and positions itself as a design philosophy. JBehave is a Java framework for BDD, and this session explores how to write integration tests for your Java EE apps with JBehave. It also demonstrates how to leverage the Context and Dependency Injection (CDI) APIs to implement your tests.</p>
 
-&lt;p&gt;This session is a must-see for all Java EE developers who want a better way to write integration tests aligned with the intended behavior.&lt;/p&gt;
+<p>This session is a must-see for all Java EE developers who want a better way to write integration tests aligned with the intended behavior.</p>
 
-&lt;h3 id=&quot;demo-code&quot;&gt;Demo Code&lt;/h3&gt;
+<h3 id="demo-code">Demo Code</h3>
 
-&lt;p&gt;The code from the demo is up on &lt;a href=&quot;https://github.com/aaronwalker/JavaOne2011&quot;&gt;github&lt;/a&gt;&lt;/p&gt;
+<p>The code from the demo is up on <a href="https://github.com/aaronwalker/JavaOne2011">github</a></p>
 
-&lt;div style=&quot;width:595px&quot; id=&quot;__ss_9564605&quot;&gt; &lt;strong style=&quot;display:block;margin:12px 0 4px&quot;&gt;&lt;a href=&quot;http://www.slideshare.net/aaronpwalker/24421-walker&quot; title=&quot;Java EE Behave!!!!&quot; target=&quot;_blank&quot;&gt;Java EE Behave!!!!&lt;/a&gt;&lt;/strong&gt; &lt;iframe src=&quot;http://www.slideshare.net/slideshow/embed_code/9564605&quot; width=&quot;595&quot; height=&quot;497&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt; &lt;div style=&quot;padding:5px 0 12px&quot;&gt; View more &lt;a href=&quot;http://www.slideshare.net/&quot; target=&quot;_blank&quot;&gt;presentations&lt;/a&gt; from &lt;a href=&quot;http://www.slideshare.net/aaronpwalker&quot; target=&quot;_blank&quot;&gt;Aaron Walker&lt;/a&gt; &lt;/div&gt; &lt;/div&gt;</content><author><name>Aaron Walker</name></author><summary type="html">Here are the slides from my JavaOne 2011 session</summary></entry><entry><title type="html">Migrated from blogger to github pages</title><link href="https://aaronwalker.cloud/2011/08/08/blog-migration-to-github.html" rel="alternate" type="text/html" title="Migrated from blogger to github pages" /><published>2011-08-08T06:55:00+00:00</published><updated>2011-08-08T06:55:00+00:00</updated><id>https://aaronwalker.cloud/2011/08/08/blog-migration-to-github</id><content type="html" xml:base="https://aaronwalker.cloud/2011/08/08/blog-migration-to-github.html">&lt;p&gt;A while back when I was setting up the project site for &lt;a href=&quot;http://jentrata.org&quot;&gt;jentrata.org&lt;/a&gt; I started looking around for site hosting options and found &lt;a href=&quot;http://pages.github.com/&quot;&gt;github pages&lt;/a&gt; and since jentrata was already using github for source code hosting it made sense to use it (and it seems to be what all the cool kids are using).&lt;/p&gt;
+<div style="width:595px" id="__ss_9564605"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/aaronpwalker/24421-walker" title="Java EE Behave!!!!" target="_blank">Java EE Behave!!!!</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/9564605" width="595" height="497" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/aaronpwalker" target="_blank">Aaron Walker</a> </div> </div>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[Here are the slides from my JavaOne 2011 session]]></summary></entry><entry><title type="html">Migrated from blogger to github pages</title><link href="https://aaronwalker.cloud/2011/08/08/blog-migration-to-github.html" rel="alternate" type="text/html" title="Migrated from blogger to github pages" /><published>2011-08-08T06:55:00+00:00</published><updated>2011-08-08T06:55:00+00:00</updated><id>https://aaronwalker.cloud/2011/08/08/blog-migration-to-github</id><content type="html" xml:base="https://aaronwalker.cloud/2011/08/08/blog-migration-to-github.html"><![CDATA[<p>A while back when I was setting up the project site for <a href="http://jentrata.org">jentrata.org</a> I started looking around for site hosting options and found <a href="http://pages.github.com/">github pages</a> and since jentrata was already using github for source code hosting it made sense to use it (and it seems to be what all the cool kids are using).</p>
 
-&lt;p&gt;In my research of github pages I found a few blog posts on migrating which were helpful&lt;/p&gt;
+<p>In my research of github pages I found a few blog posts on migrating which were helpful</p>
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://www.alexrothenberg.com/2011/01/27/moved-blog-to-jekyll-and-github-pages.html&quot;&gt;Moved Blog to Jekyll and GitHub Pages&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://github.com/mojombo/jekyll/wiki/Sites&quot;&gt;List of sites using github pages&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>
+    <p><a href="http://www.alexrothenberg.com/2011/01/27/moved-blog-to-jekyll-and-github-pages.html">Moved Blog to Jekyll and GitHub Pages</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/mojombo/jekyll/wiki/Sites">List of sites using github pages</a></p>
+  </li>
+</ul>
 
-&lt;p&gt;I am kind of digging &lt;a href=&quot;https://github.com/mojombo/jekyll&quot;&gt;jekyll&lt;/a&gt; the scripting language behind github pages it’s pretty simple but quite powerful but a lot of the extensions don’t work with github. Which I guess is understandable since it lets you run arbitrary ruby code.&lt;/p&gt;
+<p>I am kind of digging <a href="https://github.com/mojombo/jekyll">jekyll</a> the scripting language behind github pages it’s pretty simple but quite powerful but a lot of the extensions don’t work with github. Which I guess is understandable since it lets you run arbitrary ruby code.</p>
 
-&lt;p&gt;I really hated the blogger interface and it made a good excuse not to blog :). Also I like the idea of treating my blog like code.&lt;/p&gt;
+<p>I really hated the blogger interface and it made a good excuse not to blog :). Also I like the idea of treating my blog like code.</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone git@github.com:aaronwalker/aaronwalker.github.com.git
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:aaronwalker/aaronwalker.github.com.git
 cd aaronwalker.github.com.git
 vim _posts/yyyy-mm-dd-new-post.md
 write some random crap that probably nobody will read :)
@@ -312,16 +391,16 @@ git add _posts/yyyy-mm-dd-new-post.md
 git commit -m 'new post'
 git push origin master
 done
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;I think this lowers the barrier for me…&lt;/p&gt;
+<p>I think this lowers the barrier for me…</p>
 
-&lt;p&gt;I’ll put together a more technical post on how I did the migration….&lt;/p&gt;
+<p>I’ll put together a more technical post on how I did the migration….</p>
 
-&lt;p&gt;Let git it on!!!! (oh god that’s bad, so very bad)&lt;/p&gt;</content><author><name>Aaron Walker</name></author><summary type="html">A while back when I was setting up the project site for jentrata.org I started looking around for site hosting options and found github pages and since jentrata was already using github for source code hosting it made sense to use it (and it seems to be what all the cool kids are using).</summary></entry><entry><title type="html">You’ve got Cucumber in my Java….and it tastes great!!!</title><link href="https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java.html" rel="alternate" type="text/html" title="You’ve got Cucumber in my Java….and it tastes great!!!" /><published>2010-11-25T08:19:00+00:00</published><updated>2010-11-25T08:19:00+00:00</updated><id>https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java</id><content type="html" xml:base="https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java.html">&lt;p&gt;This was one of the talks I gave at &lt;a href=&quot;https://web.archive.org/web/20110912034307/http://2010.osdc.com.au/proposal/50/youve-got-cucumber-my-javaand-it-tastes-great&quot;&gt;OSDC-2010&lt;/a&gt;&lt;/p&gt;
+<p>Let git it on!!!! (oh god that’s bad, so very bad)</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[A while back when I was setting up the project site for jentrata.org I started looking around for site hosting options and found github pages and since jentrata was already using github for source code hosting it made sense to use it (and it seems to be what all the cool kids are using).]]></summary></entry><entry><title type="html">You’ve got Cucumber in my Java….and it tastes great!!!</title><link href="https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java.html" rel="alternate" type="text/html" title="You’ve got Cucumber in my Java….and it tastes great!!!" /><published>2010-11-25T08:19:00+00:00</published><updated>2010-11-25T08:19:00+00:00</updated><id>https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java</id><content type="html" xml:base="https://aaronwalker.cloud/2010/11/25/osdc-talk-cucumber-java.html"><![CDATA[<p>This was one of the talks I gave at <a href="https://web.archive.org/web/20110912034307/http://2010.osdc.com.au/proposal/50/youve-got-cucumber-my-javaand-it-tastes-great">OSDC-2010</a></p>
 
-&lt;iframe src=&quot;//www.slideshare.net/slideshow/embed_code/key/hKBPxVEbOHX1RA&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
-&lt;div style=&quot;margin-bottom:5px&quot;&gt; &lt;strong&gt; &lt;a href=&quot;//www.slideshare.net/aaronpwalker/osdc-cucumberjava&quot; title=&quot;OSDC 2010 - You&amp;#x27;ve Got Cucumber in my Java and it Tastes Great&quot; target=&quot;_blank&quot;&gt;OSDC 2010 - You&amp;#x27;ve Got Cucumber in my Java and it Tastes Great&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker&quot; target=&quot;_blank&quot;&gt;Aaron Walker&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;</content><author><name>Aaron Walker</name></author><summary type="html">This was one of the talks I gave at OSDC-2010</summary></entry><entry><title type="html">Database Full-text Search….making it not suck</title><link href="https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search.html" rel="alternate" type="text/html" title="Database Full-text Search….making it not suck" /><published>2010-11-24T00:00:00+00:00</published><updated>2010-11-24T00:00:00+00:00</updated><id>https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search</id><content type="html" xml:base="https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search.html">&lt;p&gt;This was one of the talks I gave at &lt;a href=&quot;https://web.archive.org/web/20111016090657/http://2010.osdc.com.au/proposal/51/database-full-text-searchmaking-it-not-suck&quot;&gt;OSDC-2010&lt;/a&gt;&lt;/p&gt;
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/hKBPxVEbOHX1RA" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen=""> </iframe>
+<div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/aaronpwalker/osdc-cucumberjava" title="OSDC 2010 - You&#x27;ve Got Cucumber in my Java and it Tastes Great" target="_blank">OSDC 2010 - You&#x27;ve Got Cucumber in my Java and it Tastes Great</a> </strong> from <strong><a href="https://www.slideshare.net/aaronpwalker" target="_blank">Aaron Walker</a></strong> </div>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[This was one of the talks I gave at OSDC-2010]]></summary></entry><entry><title type="html">Database Full-text Search….making it not suck</title><link href="https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search.html" rel="alternate" type="text/html" title="Database Full-text Search….making it not suck" /><published>2010-11-24T00:00:00+00:00</published><updated>2010-11-24T00:00:00+00:00</updated><id>https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search</id><content type="html" xml:base="https://aaronwalker.cloud/2010/11/24/osdc-talk-hibernate-search.html"><![CDATA[<p>This was one of the talks I gave at <a href="https://web.archive.org/web/20111016090657/http://2010.osdc.com.au/proposal/51/database-full-text-searchmaking-it-not-suck">OSDC-2010</a></p>
 
-&lt;iframe src=&quot;//www.slideshare.net/slideshow/embed_code/key/1Hea2MxOynzTg&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
-&lt;div style=&quot;margin-bottom:5px&quot;&gt; &lt;strong&gt; &lt;a href=&quot;//www.slideshare.net/aaronpwalker/osdc2010-database-fulltext-search-making-it-not-suck&quot; title=&quot;OSDC-2010 Database Full-text Search.... making it not suck&quot; target=&quot;_blank&quot;&gt;OSDC-2010 Database Full-text Search.... making it not suck&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&quot;https://www.slideshare.net/aaronpwalker&quot; target=&quot;_blank&quot;&gt;Aaron Walker&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;</content><author><name>Aaron Walker</name></author><summary type="html">This was one of the talks I gave at OSDC-2010</summary></entry><entry><title type="html">JavaOne 2008 Keynote</title><link href="https://aaronwalker.cloud/2008/05/06/keynote.html" rel="alternate" type="text/html" title="JavaOne 2008 Keynote" /><published>2008-05-06T18:20:00+00:00</published><updated>2008-05-06T18:20:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/06/keynote</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/06/keynote.html">&lt;p&gt;So the keynote started with the usual fanfare with dancers and the mandatory t-shirt throwing contest. The big theme this year is JAVA+YOU&lt;br /&gt;&lt;br /&gt;&lt;img src=&quot;http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575738_6618.jpg&quot; /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;JavaFX&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;The JavaFX Demo even though it crashed a few times was pretty impressive. They wrote a Facebook app in JavaFX using the new Java browser plugin you were able to drag the application from the browser to the desktop and it was now running with as a full desktop app.&lt;br /&gt;&lt;br /&gt;First impressions is that Sun have really worked really hard on JavaFX and it’s even running on Android.&lt;br /&gt;&lt;br /&gt;JavaFX production releases looks still a way off with early access next month.&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Java SE Update 10&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;Is going to have a preview release today. Well that means we will see it on the Mac in about 1-2 years :) This update contain the new Java plugin architecture.&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Glasshfish V3&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;So Sun make it sound like that micro-containers or micro-kernels is a new concept and that 100K kernel is something really revolutionary. That said I think that the Glassfish implementation is something that is definitely work further investigation. If JBoss don’t pickup there game and get JBoss5 out the door they could lose market share to Glassfish and the new SpringSource App Server.&lt;br /&gt;&lt;br /&gt;&lt;img src=&quot;http://photos-b.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575953_4176.jpg&quot; /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;JavaFX Blu-ray and BDJ&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;Another pretty impressive demo was with Neil Young (old old school rocker) and his blu-ray disc series. Now that blu-ray was won the HD format war I think that BDJ is going to be an import technology. The fact that you can develop JavaFX for the BDJ platform and that BDJ is in every PS3 that along is pretty compelling reason to take a serious look at JavaFX. This is something you could do with flash.&lt;br /&gt;&lt;img src=&quot;http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575954_4441.jpg&quot; /&gt;&lt;br /&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;&lt;br /&gt;Summary&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;I think that this year Sun are giving a much more cohesive message and that they have a clear direction for the Java Platform that for once is actually compelling.&lt;br /&gt;&lt;br /&gt;JavaFX - For UI on ALL devices&lt;br /&gt;&lt;br /&gt;JavaSE - to power JavaFX on the desktop&lt;br /&gt;&lt;br /&gt;JavaME - to power JavaFX on mobile devices&lt;br /&gt;&lt;br /&gt;JavaEE - to power the connected apps and services&lt;br /&gt;&lt;br /&gt;I think they may finally have the right recipe…&lt;br /&gt;&lt;br /&gt;looking forward to getting my hands dirty!!!!!!&lt;/p&gt;</content><author><name>Aaron Walker</name></author><summary type="html">So the keynote started with the usual fanfare with dancers and the mandatory t-shirt throwing contest. The big theme this year is JAVA+YOUJavaFXThe JavaFX Demo even though it crashed a few times was pretty impressive. They wrote a Facebook app in JavaFX using the new Java browser plugin you were able to drag the application from the browser to the desktop and it was now running with as a full desktop app.First impressions is that Sun have really worked really hard on JavaFX and it’s even running on Android.JavaFX production releases looks still a way off with early access next month.Java SE Update 10Is going to have a preview release today. Well that means we will see it on the Mac in about 1-2 years :) This update contain the new Java plugin architecture.Glasshfish V3So Sun make it sound like that micro-containers or micro-kernels is a new concept and that 100K kernel is something really revolutionary. That said I think that the Glassfish implementation is something that is definitely work further investigation. If JBoss don’t pickup there game and get JBoss5 out the door they could lose market share to Glassfish and the new SpringSource App Server.JavaFX Blu-ray and BDJAnother pretty impressive demo was with Neil Young (old old school rocker) and his blu-ray disc series. Now that blu-ray was won the HD format war I think that BDJ is going to be an import technology. The fact that you can develop JavaFX for the BDJ platform and that BDJ is in every PS3 that along is pretty compelling reason to take a serious look at JavaFX. This is something you could do with flash.SummaryI think that this year Sun are giving a much more cohesive message and that they have a clear direction for the Java Platform that for once is actually compelling.JavaFX - For UI on ALL devicesJavaSE - to power JavaFX on the desktopJavaME - to power JavaFX on mobile devicesJavaEE - to power the connected apps and servicesI think they may finally have the right recipe…looking forward to getting my hands dirty!!!!!!</summary></entry><entry><title type="html">CommunityOne 2008</title><link href="https://aaronwalker.cloud/2008/05/06/communityone-2008.html" rel="alternate" type="text/html" title="CommunityOne 2008" /><published>2008-05-06T04:10:00+00:00</published><updated>2008-05-06T04:10:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/06/communityone-2008</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/06/communityone-2008.html">CommunityOne is Sun's free pre JavaOne event. This contains various tracks many not directly related to Java technology such as MySQL, Open Solaris, Linux tracks plus the obligatory NetBeans and Glassfish tracks. The keynote was really just an Open Solaris, MySQL and Glassfish sales pitch. That said that combination is a pretty compelling environment to develop and deploy apps on. Open Solaris has come along way in the last 12 months.&lt;p&gt;&lt;strong&gt;Glassfish&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;I decided to take advantage of the plethora of Glassfish sessions as I wasn't planning on attending many during JavaOne. I think Glassfish has come a long way and is really now much more than just the JEE5 reference implementation. Glassfish V2 now supports many of the features you would expect in an enterprise scale app server such as clustering etc. This version of Glassfish is starting to see some serious production deployments on it, for example &lt;a href=&quot;http://www.wotif.com/&quot;&gt;wotif.com&lt;/a&gt; (Top Australian travel site).&lt;/p&gt;&lt;p&gt;Now all of that is not very interesting but Glassfish V3 is. V3 is a complete rewrite using a micro-kernel design they call HK2 (Hundred K kernel). Trust Sun to make it sound like this is something new, were in fact this is exactly what JBoss having been doing for about 8 years with their JMX Kernel that their app server is built-on. What V3 has is start on-demand services so the core container starts very quickly and will only start others services when they are needed. The demo shown was an app written in JRuby that was deployed to V3. V3 then downloaded and started the JRuby runtime then started the app. One interesting outcome of the micro-kernel design is the ability to embedd Glassfish in unit tests or making standalone web-applications they way that &lt;a href=&quot;https://hudson.dev.java.net/&quot;&gt;Hudson&lt;/a&gt; uses jetty.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Javaposse&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;&lt;a onblur=&quot;try {parent.deselectBloggerImageGracefully();} catch(e) {}&quot; href=&quot;http://photos-a.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575952_3905.jpg&quot;&gt;&lt;img style=&quot;margin: 0px auto 10px; display: block; text-align: center; cursor: pointer; width: 320px;&quot; src=&quot;http://photos-a.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575952_3905.jpg&quot; alt=&quot;&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;Dick, Carl, Tor and Joe (aka The &lt;a href=&quot;http://javaposse.com/&quot;&gt;JavaPosse&lt;/a&gt;) made an appearance at CommunityOne and they recorded an episode of their podcast (&lt;a href=&quot;http://javaposse.com/index.php?post_id=337114&quot;&gt;Episode 185&lt;/a&gt;). Gotta love those hats, It's great to see these guys live. I've listened to pretty much every episode and although at times they talk crap or talk about Java IDE's to much but it's a good way to keep up with what's going on in the Java space.&lt;/p&gt;&lt;p&gt;This was my first CommunityOne event as last year I went to the Java University event. It was really just a Sun Marketing event for all their other Open Source initiatives, this really isn't a bad thing. It's a good event for all the people involved in these communities to come together in one place especially those not focused on Java technologies.&lt;/p&gt;&lt;p&gt;I'll be back next year......&lt;/p&gt;</content><author><name>Aaron Walker</name></author><summary type="html">CommunityOne is Sun's free pre JavaOne event. This contains various tracks many not directly related to Java technology such as MySQL, Open Solaris, Linux tracks plus the obligatory NetBeans and Glassfish tracks. The keynote was really just an Open Solaris, MySQL and Glassfish sales pitch. That said that combination is a pretty compelling environment to develop and deploy apps on. Open Solaris has come along way in the last 12 months.GlassfishI decided to take advantage of the plethora of Glassfish sessions as I wasn't planning on attending many during JavaOne. I think Glassfish has come a long way and is really now much more than just the JEE5 reference implementation. Glassfish V2 now supports many of the features you would expect in an enterprise scale app server such as clustering etc. This version of Glassfish is starting to see some serious production deployments on it, for example wotif.com (Top Australian travel site).Now all of that is not very interesting but Glassfish V3 is. V3 is a complete rewrite using a micro-kernel design they call HK2 (Hundred K kernel). Trust Sun to make it sound like this is something new, were in fact this is exactly what JBoss having been doing for about 8 years with their JMX Kernel that their app server is built-on. What V3 has is start on-demand services so the core container starts very quickly and will only start others services when they are needed. The demo shown was an app written in JRuby that was deployed to V3. V3 then downloaded and started the JRuby runtime then started the app. One interesting outcome of the micro-kernel design is the ability to embedd Glassfish in unit tests or making standalone web-applications they way that Hudson uses jetty.JavaposseDick, Carl, Tor and Joe (aka The JavaPosse) made an appearance at CommunityOne and they recorded an episode of their podcast (Episode 185). Gotta love those hats, It's great to see these guys live. I've listened to pretty much every episode and although at times they talk crap or talk about Java IDE's to much but it's a good way to keep up with what's going on in the Java space.This was my first CommunityOne event as last year I went to the Java University event. It was really just a Sun Marketing event for all their other Open Source initiatives, this really isn't a bad thing. It's a good event for all the people involved in these communities to come together in one place especially those not focused on Java technologies.I'll be back next year......</summary></entry><entry><title type="html">That time again - JavaOne 2008</title><link href="https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008.html" rel="alternate" type="text/html" title="That time again - JavaOne 2008" /><published>2008-05-04T18:28:00+00:00</published><updated>2008-05-04T18:28:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008.html">So it's been a busy year for me and for &lt;a href=&quot;http://www.base2services.com/&quot; title=&quot;base2 website&quot;&gt;base2&lt;/a&gt; and I really haven't done as much blogging as I should have but at least JavaOne gives me a good reason to.&lt;p&gt;So today I'm at &lt;a href=&quot;http://www.startupcamp.org/&quot;&gt;Startup Camp&lt;/a&gt; which I think should be pretty interesting. There is about 3 to 4 hundred people here I wonder of all the startups in the room how many will make it.&lt;/p&gt;&lt;p&gt;Stay tuned to this channel...Well at least for the next week or so :)&lt;/p&gt;&lt;p&gt;&lt;a onblur=&quot;try {parent.deselectBloggerImageGracefully();} catch(e) {}&quot; href=&quot;http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_572618_7011.jpg&quot;&gt;&lt;img style=&quot;margin: 0px auto 10px; display: block; text-align: center; cursor: pointer; width: 320px;&quot; src=&quot;http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_572618_7011.jpg&quot; alt=&quot;&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;div class=&quot;blogger-post-footer&quot;&gt;</content><author><name>Aaron Walker</name></author><summary type="html">So it's been a busy year for me and for base2 and I really haven't done as much blogging as I should have but at least JavaOne gives me a good reason to.So today I'm at Startup Camp which I think should be pretty interesting. There is about 3 to 4 hundred people here I wonder of all the startups in the room how many will make it.Stay tuned to this channel...Well at least for the next week or so :)</summary></entry><entry><title type="html">Packaging a Java App for Mac OSX</title><link href="https://aaronwalker.cloud/2007/05/29/packaging-java-app-for-mac-osx.html" rel="alternate" type="text/html" title="Packaging a Java App for Mac OSX" /><published>2007-05-29T05:48:00+00:00</published><updated>2007-05-29T05:48:00+00:00</updated><id>https://aaronwalker.cloud/2007/05/29/packaging-java-app-for-mac-osx</id><content type="html" xml:base="https://aaronwalker.cloud/2007/05/29/packaging-java-app-for-mac-osx.html">At JavaOne I noticed that a good 30-50% of developers had Macs and one thing that had always annoyed me about Java client applications on Mac OSX is that they just look and feel wrong and do behave like a Mac App. So after a bit of surfing around I found a couple of decent articles discussing different ways to improve this. One thing I love about Macs is the easy I can install, run and uninstall apps. Most Mac apps look like a single file (Application bundle) which is actually a special directory. So the information outlined below helps automate the process of creating an OSX app bundle which can easily be integrated into an existing ant build.&lt;br /&gt;&lt;br /&gt;The ant target below is an example of how to package a Java application as a .app for OSX.&lt;br /&gt;To use this target you need to have setup some ant properties such as:&lt;br /&gt;&lt;br /&gt;${app.name} - the name of the application for example MyApp will result in MyApp.app in the ${dist.mac} directory&lt;br /&gt;${dist.mac} - the directory where the resulting .app will be created&lt;br /&gt;${javaappstub.dir} - is the path to the JavaApplicationStub for the Java version you want this app to run for example /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS&lt;br /&gt;${packaging.mac} - The location of mac specific artifacts such as Info.plist&lt;br /&gt;&lt;br /&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;target name=&quot;osx.app&quot; depends=&quot;jar&quot;&amp;gt;&lt;br /&gt;  &amp;lt;property name=&quot;appdir&quot; value=&quot;${dist.mac}/${app.name}.app&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;mkdir dir=&quot;${appdir}&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;mkdir dir=&quot;${appdir}/Contents&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;mkdir dir=&quot;${appdir}/Contents/MacOS&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;mkdir dir=&quot;${appdir}/Contents/Resources&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;mkdir dir=&quot;${appdir}/Contents/Resources/Java&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;copy file=&quot;${javaappstub.dir}/JavaApplicationStub&quot; todir=&quot;${appdir}/Contents/MacOS&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;copy file=&quot;${packaging.mac}/Info.plist&quot; todir=&quot;${appdir}/Contents&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;copy file=&quot;${packaging.mac}/PkgInfo&quot; todir=&quot;${appdir}/Contents&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;copy todir=&quot;${appdir}/Contents/Resources&quot;&amp;gt;&lt;br /&gt;    &amp;lt;fileset dir=&quot;${src}/images&quot;&amp;gt;&lt;br /&gt;      &amp;lt;include name=&quot;*&quot;/&amp;gt;&lt;br /&gt;    &amp;lt;/fileset&amp;gt;&lt;br /&gt;  &amp;lt;/copy&amp;gt;&lt;br /&gt;  &amp;lt;copy file=&quot;${build}/${app-name}.jar&quot; todir=&quot;${appdir}/Contents/Resources/Java&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;copy todir=&quot;${appdir}/Contents/Resources/Java&quot;&amp;gt;&lt;br /&gt;    &amp;lt;fileset dir=&quot;lib&quot;&amp;gt;&lt;br /&gt;      &amp;lt;include name=&quot;*.jar&quot;/&amp;gt;&lt;br /&gt;    &amp;lt;/fileset&amp;gt;&lt;br /&gt;  &amp;lt;/copy&amp;gt;&lt;br /&gt;  &amp;lt;exec command=&quot;/Developer/Tools/SetFile -a B ${appdir}&quot;/&amp;gt;&lt;br /&gt;  &amp;lt;exec command=&quot;chmod 755 ${appdir}/Contents/MacOS/JavaApplicationStub&quot;/&amp;gt;&lt;br /&gt;&amp;lt;/target&amp;gt;&lt;/code&gt;&lt;br /&gt;&lt;/pre&gt;The &lt;em&gt;Info.plist&lt;/em&gt; file is an XML configuration file that&lt;br /&gt;completely defines an application. It tells OS X the name of the&lt;br /&gt;application, how to start it, which icons to use, which files it&lt;br /&gt;understands, and virtually every other config parameter you can imagine.&lt;br /&gt;&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;br /&gt;&amp;lt;!DOCTYPE plist SYSTEM &quot;file://localhost/System/Library/DTDs/PropertyList.dtd&quot;&amp;gt;&lt;br /&gt;&amp;lt;plist version=&quot;0.9&quot;&amp;gt;&lt;br /&gt;&amp;lt;dict&amp;gt;&lt;br /&gt;...&lt;br /&gt;    &amp;lt;key&amp;gt;CFBundleIconFile&amp;lt;/key&amp;gt;&lt;br /&gt;    &amp;lt;string&amp;gt;MyApp.icns&amp;lt;/string&amp;gt;&lt;br /&gt;    &amp;lt;key&amp;gt;Java&amp;lt;/key&amp;gt;&lt;br /&gt;    &amp;lt;dict&amp;gt;&lt;br /&gt;        &amp;lt;key&amp;gt;MainClass&amp;lt;/key&amp;gt;&lt;br /&gt;        &amp;lt;string&amp;gt;com.base2.myapp.Main&amp;lt;/string&amp;gt;&lt;br /&gt;        &amp;lt;key&amp;gt;JVMVersion&amp;lt;/key&amp;gt;&lt;br /&gt;        &amp;lt;string&amp;gt;1.4+&amp;lt;/string&amp;gt;&lt;br /&gt;        &amp;lt;key&amp;gt;ClassPath&amp;lt;/key&amp;gt;&lt;br /&gt;        &amp;lt;array&amp;gt;&lt;br /&gt;            &amp;lt;string&amp;gt;$JAVAROOT/myapp.jar&amp;lt;/string&amp;gt;&lt;br /&gt;            &amp;lt;!-- include any required jars as additional &amp;lt;string&amp;gt; elements --&amp;gt;&lt;br /&gt;        &amp;lt;/array&amp;gt;&lt;br /&gt;        &amp;lt;key&amp;gt;Properties&amp;lt;/key&amp;gt;&lt;br /&gt;        &amp;lt;dict&amp;gt;&lt;br /&gt;          &amp;lt;key&amp;gt;com.apple.mrj.application.apple.menu.about.name&amp;lt;/key&amp;gt;&lt;br /&gt;          &amp;lt;string&amp;gt;MyApp&amp;lt;/string&amp;gt;&lt;br /&gt;          &amp;lt;key&amp;gt;apple.laf.useScreenMenuBar&amp;gt;&lt;br /&gt;          &amp;lt;string&amp;gt;true&amp;lt;/string&amp;gt;&lt;br /&gt;          &amp;lt;key&amp;gt;com.apple.macos.useScreenMenuBar&amp;lt;/key&amp;gt;&lt;br /&gt;          &amp;lt;string&amp;gt;true&amp;lt;/string&amp;gt;&lt;br /&gt;        &amp;lt;/dict&amp;gt;&lt;br /&gt;    &amp;lt;/dict&amp;gt;&lt;br /&gt;&amp;lt;/dict&amp;gt;&lt;/code&gt;&lt;br /&gt;&lt;/pre&gt;Also the PkgInfo file is a plain text file. If you have not registered a creator code with ADC, the contents should be APPL????. If you have registered a creator code replace the ???? with your creator code.&lt;br /&gt;&lt;br /&gt;&lt;em&gt;See apple's &lt;/em&gt;&lt;em&gt;&lt;a href=&quot;http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969&quot;&gt;Java Dictionary Info.plist Keys&lt;/a&gt;&lt;/em&gt;&lt;em&gt; for more details&lt;/em&gt;&lt;br /&gt;&lt;br /&gt;&lt;em&gt;See apple's documentation for &lt;/em&gt;&lt;em&gt;&lt;a href=&quot;http://developer.apple.com/documentation/Java/Conceptual/Java14Development/index.html#//apple_ref/doc/uid/TP30001142&quot; target=&quot;_blank&quot;&gt;additional configuration options&lt;/a&gt;&lt;/em&gt;&lt;br /&gt;&lt;br /&gt;&lt;em&gt;See  apple's &lt;/em&gt;&lt;em&gt;&lt;a href=&quot;http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html#//apple_ref/doc/uid/TP40001975&quot; target=&quot;_blank&quot;&gt;Java System properties&lt;/a&gt;&lt;/em&gt;&lt;em&gt; documentation for more details about apple specific system properties&lt;/em&gt;&lt;br /&gt;&lt;br /&gt;</content><author><name>Aaron Walker</name></author><summary type="html">At JavaOne I noticed that a good 30-50% of developers had Macs and one thing that had always annoyed me about Java client applications on Mac OSX is that they just look and feel wrong and do behave like a Mac App. So after a bit of surfing around I found a couple of decent articles discussing different ways to improve this. One thing I love about Macs is the easy I can install, run and uninstall apps. Most Mac apps look like a single file (Application bundle) which is actually a special directory. So the information outlined below helps automate the process of creating an OSX app bundle which can easily be integrated into an existing ant build.The ant target below is an example of how to package a Java application as a .app for OSX.To use this target you need to have setup some ant properties such as:${app.name} - the name of the application for example MyApp will result in MyApp.app in the ${dist.mac} directory${dist.mac} - the directory where the resulting .app will be created${javaappstub.dir} - is the path to the JavaApplicationStub for the Java version you want this app to run for example /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS${packaging.mac} - The location of mac specific artifacts such as Info.plist&amp;lt;target name=&quot;osx.app&quot; depends=&quot;jar&quot;&amp;gt; &amp;lt;property name=&quot;appdir&quot; value=&quot;${dist.mac}/${app.name}.app&quot;/&amp;gt; &amp;lt;mkdir dir=&quot;${appdir}&quot;/&amp;gt; &amp;lt;mkdir dir=&quot;${appdir}/Contents&quot;/&amp;gt; &amp;lt;mkdir dir=&quot;${appdir}/Contents/MacOS&quot;/&amp;gt; &amp;lt;mkdir dir=&quot;${appdir}/Contents/Resources&quot;/&amp;gt; &amp;lt;mkdir dir=&quot;${appdir}/Contents/Resources/Java&quot;/&amp;gt; &amp;lt;copy file=&quot;${javaappstub.dir}/JavaApplicationStub&quot; todir=&quot;${appdir}/Contents/MacOS&quot;/&amp;gt; &amp;lt;copy file=&quot;${packaging.mac}/Info.plist&quot; todir=&quot;${appdir}/Contents&quot;/&amp;gt; &amp;lt;copy file=&quot;${packaging.mac}/PkgInfo&quot; todir=&quot;${appdir}/Contents&quot;/&amp;gt; &amp;lt;copy todir=&quot;${appdir}/Contents/Resources&quot;&amp;gt; &amp;lt;fileset dir=&quot;${src}/images&quot;&amp;gt; &amp;lt;include name=&quot;*&quot;/&amp;gt; &amp;lt;/fileset&amp;gt; &amp;lt;/copy&amp;gt; &amp;lt;copy file=&quot;${build}/${app-name}.jar&quot; todir=&quot;${appdir}/Contents/Resources/Java&quot;/&amp;gt; &amp;lt;copy todir=&quot;${appdir}/Contents/Resources/Java&quot;&amp;gt; &amp;lt;fileset dir=&quot;lib&quot;&amp;gt; &amp;lt;include name=&quot;*.jar&quot;/&amp;gt; &amp;lt;/fileset&amp;gt; &amp;lt;/copy&amp;gt; &amp;lt;exec command=&quot;/Developer/Tools/SetFile -a B ${appdir}&quot;/&amp;gt; &amp;lt;exec command=&quot;chmod 755 ${appdir}/Contents/MacOS/JavaApplicationStub&quot;/&amp;gt;&amp;lt;/target&amp;gt;The Info.plist file is an XML configuration file thatcompletely defines an application. It tells OS X the name of theapplication, how to start it, which icons to use, which files itunderstands, and virtually every other config parameter you can imagine.&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&amp;lt;!DOCTYPE plist SYSTEM &quot;file://localhost/System/Library/DTDs/PropertyList.dtd&quot;&amp;gt;&amp;lt;plist version=&quot;0.9&quot;&amp;gt;&amp;lt;dict&amp;gt;... &amp;lt;key&amp;gt;CFBundleIconFile&amp;lt;/key&amp;gt; &amp;lt;string&amp;gt;MyApp.icns&amp;lt;/string&amp;gt; &amp;lt;key&amp;gt;Java&amp;lt;/key&amp;gt; &amp;lt;dict&amp;gt; &amp;lt;key&amp;gt;MainClass&amp;lt;/key&amp;gt; &amp;lt;string&amp;gt;com.base2.myapp.Main&amp;lt;/string&amp;gt; &amp;lt;key&amp;gt;JVMVersion&amp;lt;/key&amp;gt; &amp;lt;string&amp;gt;1.4+&amp;lt;/string&amp;gt; &amp;lt;key&amp;gt;ClassPath&amp;lt;/key&amp;gt; &amp;lt;array&amp;gt; &amp;lt;string&amp;gt;$JAVAROOT/myapp.jar&amp;lt;/string&amp;gt; &amp;lt;!-- include any required jars as additional &amp;lt;string&amp;gt; elements --&amp;gt; &amp;lt;/array&amp;gt; &amp;lt;key&amp;gt;Properties&amp;lt;/key&amp;gt; &amp;lt;dict&amp;gt; &amp;lt;key&amp;gt;com.apple.mrj.application.apple.menu.about.name&amp;lt;/key&amp;gt; &amp;lt;string&amp;gt;MyApp&amp;lt;/string&amp;gt; &amp;lt;key&amp;gt;apple.laf.useScreenMenuBar&amp;gt; &amp;lt;string&amp;gt;true&amp;lt;/string&amp;gt; &amp;lt;key&amp;gt;com.apple.macos.useScreenMenuBar&amp;lt;/key&amp;gt; &amp;lt;string&amp;gt;true&amp;lt;/string&amp;gt; &amp;lt;/dict&amp;gt; &amp;lt;/dict&amp;gt;&amp;lt;/dict&amp;gt;Also the PkgInfo file is a plain text file. If you have not registered a creator code with ADC, the contents should be APPL????. If you have registered a creator code replace the ???? with your creator code.See apple's Java Dictionary Info.plist Keys for more detailsSee apple's documentation for additional configuration optionsSee apple's Java System properties documentation for more details about apple specific system properties</summary></entry></feed>
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/1Hea2MxOynzTg" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen=""> </iframe>
+<div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/aaronpwalker/osdc2010-database-fulltext-search-making-it-not-suck" title="OSDC-2010 Database Full-text Search.... making it not suck" target="_blank">OSDC-2010 Database Full-text Search.... making it not suck</a> </strong> from <strong><a href="https://www.slideshare.net/aaronpwalker" target="_blank">Aaron Walker</a></strong> </div>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[This was one of the talks I gave at OSDC-2010]]></summary></entry><entry><title type="html">JavaOne 2008 Keynote</title><link href="https://aaronwalker.cloud/2008/05/06/keynote.html" rel="alternate" type="text/html" title="JavaOne 2008 Keynote" /><published>2008-05-06T18:20:00+00:00</published><updated>2008-05-06T18:20:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/06/keynote</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/06/keynote.html"><![CDATA[<p>So the keynote started with the usual fanfare with dancers and the mandatory t-shirt throwing contest. The big theme this year is JAVA+YOU<br /><br /><img src="http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575738_6618.jpg" /><br /><br /><span style="font-weight: bold;">JavaFX</span><br /><br />The JavaFX Demo even though it crashed a few times was pretty impressive. They wrote a Facebook app in JavaFX using the new Java browser plugin you were able to drag the application from the browser to the desktop and it was now running with as a full desktop app.<br /><br />First impressions is that Sun have really worked really hard on JavaFX and it’s even running on Android.<br /><br />JavaFX production releases looks still a way off with early access next month.<br /><br /><span style="font-weight: bold;">Java SE Update 10</span><br /><br />Is going to have a preview release today. Well that means we will see it on the Mac in about 1-2 years :) This update contain the new Java plugin architecture.<br /><br /><span style="font-weight: bold;">Glasshfish V3</span><br /><br />So Sun make it sound like that micro-containers or micro-kernels is a new concept and that 100K kernel is something really revolutionary. That said I think that the Glassfish implementation is something that is definitely work further investigation. If JBoss don’t pickup there game and get JBoss5 out the door they could lose market share to Glassfish and the new SpringSource App Server.<br /><br /><img src="http://photos-b.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575953_4176.jpg" /><br /><br /><span style="font-weight: bold;">JavaFX Blu-ray and BDJ</span><br /><br />Another pretty impressive demo was with Neil Young (old old school rocker) and his blu-ray disc series. Now that blu-ray was won the HD format war I think that BDJ is going to be an import technology. The fact that you can develop JavaFX for the BDJ platform and that BDJ is in every PS3 that along is pretty compelling reason to take a serious look at JavaFX. This is something you could do with flash.<br /><img src="http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575954_4441.jpg" /><br /><span style="font-weight: bold;"><br />Summary</span><br /><br />I think that this year Sun are giving a much more cohesive message and that they have a clear direction for the Java Platform that for once is actually compelling.<br /><br />JavaFX - For UI on ALL devices<br /><br />JavaSE - to power JavaFX on the desktop<br /><br />JavaME - to power JavaFX on mobile devices<br /><br />JavaEE - to power the connected apps and services<br /><br />I think they may finally have the right recipe…<br /><br />looking forward to getting my hands dirty!!!!!!</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[So the keynote started with the usual fanfare with dancers and the mandatory t-shirt throwing contest. The big theme this year is JAVA+YOUJavaFXThe JavaFX Demo even though it crashed a few times was pretty impressive. They wrote a Facebook app in JavaFX using the new Java browser plugin you were able to drag the application from the browser to the desktop and it was now running with as a full desktop app.First impressions is that Sun have really worked really hard on JavaFX and it’s even running on Android.JavaFX production releases looks still a way off with early access next month.Java SE Update 10Is going to have a preview release today. Well that means we will see it on the Mac in about 1-2 years :) This update contain the new Java plugin architecture.Glasshfish V3So Sun make it sound like that micro-containers or micro-kernels is a new concept and that 100K kernel is something really revolutionary. That said I think that the Glassfish implementation is something that is definitely work further investigation. If JBoss don’t pickup there game and get JBoss5 out the door they could lose market share to Glassfish and the new SpringSource App Server.JavaFX Blu-ray and BDJAnother pretty impressive demo was with Neil Young (old old school rocker) and his blu-ray disc series. Now that blu-ray was won the HD format war I think that BDJ is going to be an import technology. The fact that you can develop JavaFX for the BDJ platform and that BDJ is in every PS3 that along is pretty compelling reason to take a serious look at JavaFX. This is something you could do with flash.SummaryI think that this year Sun are giving a much more cohesive message and that they have a clear direction for the Java Platform that for once is actually compelling.JavaFX - For UI on ALL devicesJavaSE - to power JavaFX on the desktopJavaME - to power JavaFX on mobile devicesJavaEE - to power the connected apps and servicesI think they may finally have the right recipe…looking forward to getting my hands dirty!!!!!!]]></summary></entry><entry><title type="html">CommunityOne 2008</title><link href="https://aaronwalker.cloud/2008/05/06/communityone-2008.html" rel="alternate" type="text/html" title="CommunityOne 2008" /><published>2008-05-06T04:10:00+00:00</published><updated>2008-05-06T04:10:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/06/communityone-2008</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/06/communityone-2008.html"><![CDATA[CommunityOne is Sun's free pre JavaOne event. This contains various tracks many not directly related to Java technology such as MySQL, Open Solaris, Linux tracks plus the obligatory NetBeans and Glassfish tracks. The keynote was really just an Open Solaris, MySQL and Glassfish sales pitch. That said that combination is a pretty compelling environment to develop and deploy apps on. Open Solaris has come along way in the last 12 months.<p><strong>Glassfish</strong></p><p>I decided to take advantage of the plethora of Glassfish sessions as I wasn't planning on attending many during JavaOne. I think Glassfish has come a long way and is really now much more than just the JEE5 reference implementation. Glassfish V2 now supports many of the features you would expect in an enterprise scale app server such as clustering etc. This version of Glassfish is starting to see some serious production deployments on it, for example <a href="http://www.wotif.com/">wotif.com</a> (Top Australian travel site).</p><p>Now all of that is not very interesting but Glassfish V3 is. V3 is a complete rewrite using a micro-kernel design they call HK2 (Hundred K kernel). Trust Sun to make it sound like this is something new, were in fact this is exactly what JBoss having been doing for about 8 years with their JMX Kernel that their app server is built-on. What V3 has is start on-demand services so the core container starts very quickly and will only start others services when they are needed. The demo shown was an app written in JRuby that was deployed to V3. V3 then downloaded and started the JRuby runtime then started the app. One interesting outcome of the micro-kernel design is the ability to embedd Glassfish in unit tests or making standalone web-applications they way that <a href="https://hudson.dev.java.net/">Hudson</a> uses jetty.</p><p><strong>Javaposse</strong><br /><br /><a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://photos-a.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575952_3905.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer; width: 320px;" src="http://photos-a.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_575952_3905.jpg" alt="" border="0" /></a><br /></p><p>Dick, Carl, Tor and Joe (aka The <a href="http://javaposse.com/">JavaPosse</a>) made an appearance at CommunityOne and they recorded an episode of their podcast (<a href="http://javaposse.com/index.php?post_id=337114">Episode 185</a>). Gotta love those hats, It's great to see these guys live. I've listened to pretty much every episode and although at times they talk crap or talk about Java IDE's to much but it's a good way to keep up with what's going on in the Java space.</p><p>This was my first CommunityOne event as last year I went to the Java University event. It was really just a Sun Marketing event for all their other Open Source initiatives, this really isn't a bad thing. It's a good event for all the people involved in these communities to come together in one place especially those not focused on Java technologies.</p><p>I'll be back next year......</p>]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[CommunityOne is Sun's free pre JavaOne event. This contains various tracks many not directly related to Java technology such as MySQL, Open Solaris, Linux tracks plus the obligatory NetBeans and Glassfish tracks. The keynote was really just an Open Solaris, MySQL and Glassfish sales pitch. That said that combination is a pretty compelling environment to develop and deploy apps on. Open Solaris has come along way in the last 12 months.GlassfishI decided to take advantage of the plethora of Glassfish sessions as I wasn't planning on attending many during JavaOne. I think Glassfish has come a long way and is really now much more than just the JEE5 reference implementation. Glassfish V2 now supports many of the features you would expect in an enterprise scale app server such as clustering etc. This version of Glassfish is starting to see some serious production deployments on it, for example wotif.com (Top Australian travel site).Now all of that is not very interesting but Glassfish V3 is. V3 is a complete rewrite using a micro-kernel design they call HK2 (Hundred K kernel). Trust Sun to make it sound like this is something new, were in fact this is exactly what JBoss having been doing for about 8 years with their JMX Kernel that their app server is built-on. What V3 has is start on-demand services so the core container starts very quickly and will only start others services when they are needed. The demo shown was an app written in JRuby that was deployed to V3. V3 then downloaded and started the JRuby runtime then started the app. One interesting outcome of the micro-kernel design is the ability to embedd Glassfish in unit tests or making standalone web-applications they way that Hudson uses jetty.JavaposseDick, Carl, Tor and Joe (aka The JavaPosse) made an appearance at CommunityOne and they recorded an episode of their podcast (Episode 185). Gotta love those hats, It's great to see these guys live. I've listened to pretty much every episode and although at times they talk crap or talk about Java IDE's to much but it's a good way to keep up with what's going on in the Java space.This was my first CommunityOne event as last year I went to the Java University event. It was really just a Sun Marketing event for all their other Open Source initiatives, this really isn't a bad thing. It's a good event for all the people involved in these communities to come together in one place especially those not focused on Java technologies.I'll be back next year......]]></summary></entry><entry><title type="html">That time again - JavaOne 2008</title><link href="https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008.html" rel="alternate" type="text/html" title="That time again - JavaOne 2008" /><published>2008-05-04T18:28:00+00:00</published><updated>2008-05-04T18:28:00+00:00</updated><id>https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008</id><content type="html" xml:base="https://aaronwalker.cloud/2008/05/04/that-time-again-javaone-2008.html"><![CDATA[So it's been a busy year for me and for <a href="http://www.base2services.com/" title="base2 website">base2</a> and I really haven't done as much blogging as I should have but at least JavaOne gives me a good reason to.<p>So today I'm at <a href="http://www.startupcamp.org/">Startup Camp</a> which I think should be pretty interesting. There is about 3 to 4 hundred people here I wonder of all the startups in the room how many will make it.</p><p>Stay tuned to this channel...Well at least for the next week or so :)</p><p><a onblur="try {parent.deselectBloggerImageGracefully();} catch(e) {}" href="http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_572618_7011.jpg"><img style="margin: 0px auto 10px; display: block; text-align: center; cursor: pointer; width: 320px;" src="http://photos-c.ak.facebook.com/photos-ak-sf2p/v248/134/117/543017321/n543017321_572618_7011.jpg" alt="" border="0" /></a></p><p><br /></p><div class="blogger-post-footer">]]></content><author><name>Aaron Walker</name></author><summary type="html"><![CDATA[So it's been a busy year for me and for base2 and I really haven't done as much blogging as I should have but at least JavaOne gives me a good reason to.So today I'm at Startup Camp which I think should be pretty interesting. There is about 3 to 4 hundred people here I wonder of all the startups in the room how many will make it.Stay tuned to this channel...Well at least for the next week or so :)]]></summary></entry></feed>
