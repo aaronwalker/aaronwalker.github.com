@@ -3,7 +3,7 @@ layout: post
 name: write-aws-cloud-infra-code-using ai
 layout: post
 title: Using ChatGPT to help you write AWS Cloud Infrastructure Code
-time: 2022-11-22 18:00:00 +1:00
+time: 2022-12-16 18:00:00 +1:00
 background: /img/bg-berlin.jpg
 ---
 
