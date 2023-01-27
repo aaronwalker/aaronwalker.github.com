@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Choosing Between AWS Lambda and Fargate - aaronwalker.cloud
+    
+  </title>
+
+  <meta name="description" content="A common question I receive frequently is when to use AWS Lambda over AWS Fargate. Both being “serverless” services, it can be challenging to determine which...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://aaronwalker.cloud/2023/01/27/lambda-or-fargate.html">
+  <link rel="alternate" type="application/rss+xml" title="aaronwalker.cloud" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">aaronwalker.cloud</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/img/bg-home.jpg')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Choosing Between AWS Lambda and Fargate</h1>
+            
+            <span class="meta">Posted by
+              <a href="#">Aaron Walker</a>
+              on January 27, 2023 &middot; <span class="reading-time" title="Estimated read time">
+  
+   3 mins  read </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>A common question I receive frequently is when to use AWS Lambda over AWS Fargate. Both being “serverless” services, it can be challenging to determine which one is more suitable for a specific use case. Let’s dive deeper and explore the differences between these two services to help make a more informed decision.</p>
+
+<p>AWS Lambda and Amazon Fargate are both services offered by Amazon Web Services (AWS) that allow users to run and scale code without having to manage the underlying infrastructure. While these services share some similarities, they are designed for different use cases and come with their own set of advantages and limitations.</p>
+
+<p>AWS Lambda is a serverless computing service that allows you to run code without provisioning or managing servers. According to the AWS Lambda website, “AWS Lambda automatically scales and monitors your applications so you don’t have to. You can build serverless applications that automatically scale based on incoming request traffic. You can also use AWS Lambda to create new back-end services where compute resources are automatically triggered based on custom requests.” This makes it a great choice for event-driven, short-lived processes, such as image or video processing, and real-time stream processing.</p>
+
+<p>On the other hand, Amazon Fargate is a fully managed container orchestration service that allows you to run and scale containers without having to manage the underlying infrastructure. According to the AWS Blog, “Amazon Fargate makes it easy to run and scale containerized applications without having to manage the underlying infrastructure. You can launch and stop containers, scale your applications, and monitor their performance using the same familiar Amazon EC2 and Amazon ECS APIs and tools you already use.” This makes it a great choice for running and scaling long-running applications that require more control over the underlying infrastructure, such as microservices and big data workloads.</p>
+
+<p>It’s also worth noting that Lambda and Fargate can be used together as well, for example, you could use Lambda to trigger an action that then runs a containerized task on Fargate. According to the AWS Blog, “You can use AWS Lambda to process records in an Amazon Kinesis stream, detect image and video labels using Amazon Rekognition, and even run your own custom logic written in any programming language. With these capabilities, you can use AWS Lambda to build entire applications or augment the functionality of existing ones.”</p>
+
+<p>In conclusion, when deciding between AWS Lambda and Amazon Fargate, it’s important to consider the specific requirements of your application and use case. AWS Lambda is a great choice for event-driven, short-lived processes, while Amazon Fargate is a great choice for running and scaling long-running applications that require more control over the underlying infrastructure. Additionally, these services can be used together to build even more powerful and scalable applications.</p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/2022/12/16/write-aws-cloud-infra-code-using-ai.html" data-toggle="tooltip" data-placement="top" title="Using ChatGPT to help you write AWS Cloud Infrastructure Code">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Aaron Walker 2023</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/scripts.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25009418-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-25009418-1');
+</script>
+
+
+
+</body>
+
+</html>
