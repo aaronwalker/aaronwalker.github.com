@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Introduction to Amazon VPC Lattice - A Managed &quot;Service Mesh&quot; for Modernizing Applications - aaronwalker.cloud
+    
+  </title>
+
+  <meta name="description" content="Amazon Web Services (AWS) has recently launched a new service called Amazon VPC Lattice, which is a managed service mesh that helps users modernize their app...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://aaronwalker.cloud/2023/06/05/aws-vpc-lattice.html">
+  <link rel="alternate" type="application/rss+xml" title="aaronwalker.cloud" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">aaronwalker.cloud</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- Page Header -->
+
+<header class="masthead" style="background-image: url('/img/cloud-lattice.png')">
+  
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Introduction to Amazon VPC Lattice - A Managed "Service Mesh" for Modernizing Applications</h1>
+            
+            <span class="meta">Posted by
+              <a href="#">Aaron Walker</a>
+              on June 05, 2023 &middot; <span class="reading-time" title="Estimated read time">
+  
+   7 mins  read </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Amazon Web Services (AWS) has recently launched a new service called Amazon VPC Lattice, which is a managed service mesh that helps users modernize their applications by providing automatic management of network connectivity, traffic routing, and security between services across different VPCs and AWS accounts.</p>
+
+<p>In this blog post, we will explore the key features of Amazon VPC Lattice and how it can help you modernize your application architecture.</p>
+
+<h2 id="features-of-aws-vpc-lattice">Features of AWS VPC Lattice:</h2>
+<hr />
+<h3 id="automatic-management-of-network-connectivity-and-traffic-routing">Automatic Management of Network Connectivity and Traffic Routing</h3>
+
+<p>Amazon VPC Lattice automatically manages network connectivity and application layer routing between services across different VPCs and AWS accounts. This means that you no longer have to manage the underlying network connectivity, frontend load balancers, or sidecar proxies next to every workload. This capability allows you to focus on your application logic and deliver applications faster.</p>
+
+<h3 id="service-directory-and-service-network">Service Directory and Service Network</h3>
+
+<p>Amazon VPC Lattice provides a service directory with a centralized view of the services that you own or have been shared with you through AWS Resource Access Manager (AWS RAM). Additionally, you can create a service network with a logical boundary that is used to automatically implement service discovery and connectivity. You can also apply common access and observability policies to a collection of services.</p>
+
+<h3 id="automatic-connectivity-between-vpcs-and-accounts">Automatic Connectivity between VPCs and Accounts</h3>
+
+<p>Amazon VPC Lattice automatically manages network connectivity between VPCs and accounts, in addition to network address translation between IPv4, IPv6, and overlapping IP addresses. This means that you no longer have to manually set up and manage complex network connectivity between different VPCs and accounts.</p>
+
+<h3 id="advanced-traffic-management-and-application-layer-routing">Advanced Traffic Management and Application Layer Routing</h3>
+
+<p>Amazon VPC Lattice is a fully managed application layer proxy that provides common controls to route traffic based on request characteristics. It also supports weighted routing for blue/green and canary-style deployments, which makes it easier to manage deployments and minimize downtime.</p>
+
+<h3 id="context-specific-authentication-and-authorization">Context-Specific Authentication and Authorization</h3>
+
+<p>Amazon VPC Lattice integrates with AWS Identity and Access Management (IAM) for service-to-service authentication and authorization, providing the same familiar authentication and authorization capabilities you use today with AWS services. This capability allows you to easily manage access to your services and ensure that only authorized services can access each other.</p>
+
+<h3 id="compute-types">Compute Types</h3>
+
+<p>By using Amazon VPC Lattice, you can choose from different compute types, such as instances, containers, and serverless, for a given service. This helps you modernize from a monolithic application architecture to a microservices architecture. This capability also helps improve scalability and cost efficiency.</p>
+
+<h3 id="integrated-monitoring-and-reporting">Integrated Monitoring and Reporting</h3>
+
+<p>AWS VPC Lattice comes with built-in monitoring and reporting tools that provide insights into your networking environment. These tools help identify potential issues before they become critical problems and enable proactive troubleshooting.</p>
+
+<h2 id="how-amazon-vpc-lattice-is-different-from-traditional-service-mesh-products-and-tools">How Amazon VPC Lattice is Different from Traditional Service Mesh Products and Tools</h2>
+
+<p>Traditional service mesh products and tools are typically built as open-source software that can be installed and configured on your own infrastructure. They provide features such as traffic routing, service discovery, load balancing, and observability. However, managing and scaling these service mesh tools can be challenging, and may require dedicated teams with specialized knowledge.</p>
+
+<p>Amazon VPC Lattice, on the other hand, is a fully managed service mesh that is built on top of AWS infrastructure. It provides automatic management of network connectivity, traffic routing, and security between services across different VPCs and AWS accounts. This means that you don’t have to worry about managing the underlying infrastructure, and can focus on your application logic instead.</p>
+
+<p>Here are some specific ways that Amazon VPC Lattice differs from traditional service mesh products and tools:</p>
+
+<p>Fully Managed: Amazon VPC Lattice is a fully managed service that provides automatic management of network connectivity and traffic routing, so you don’t have to manage the underlying infrastructure yourself. Traditional service mesh products and tools require you to install and configure the software on your own infrastructure.</p>
+
+<p>Integrated with AWS: Amazon VPC Lattice is built on top of AWS infrastructure and integrates with other AWS services such as IAM, AWS RAM, and AWS PrivateLink. This provides a seamless experience for managing your applications in the cloud. Traditional service mesh products and tools may require additional configuration to integrate with other cloud services.</p>
+
+<p>Service Network: Amazon VPC Lattice provides a service network with a logical boundary that is used to automatically implement service discovery and connectivity. This makes it easy to manage your application’s network topology. Traditional service mesh products and tools may require you to configure complex networking topologies manually.</p>
+
+<p>Advanced Traffic Management: Amazon VPC Lattice provides advanced traffic management features such as weighted routing for blue/green and canary-style deployments. This makes it easier to manage deployments and minimize downtime. Traditional service mesh products and tools may not provide these advanced traffic management features.</p>
+
+<p>Easier to Use: Amazon VPC Lattice is designed to be easier to use than traditional service mesh products and tools. It provides a service directory with a centralized view of the services that you own or have been shared with you through AWS RAM. Additionally, you can choose from different compute types, such as instances, containers, and serverless, for a given service, which helps you modernize from a monolithic application architecture to a microservices architecture. This makes it easier to manage your applications in the cloud.</p>
+
+<p>In conclusion, Amazon VPC Lattice empowers developers and organizations to embrace a modern, microservices-oriented approach without the burden of managing complex networking and service mesh infrastructure. By automating network connectivity, traffic routing, and security, Amazon VPC Lattice enables you to focus on innovation and rapidly deliver applications to meet evolving business needs. Take advantage of this fully managed service mesh and unlock the potential of your applications in the cloud.</p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/2023/01/27/lambda-or-fargate.html" data-toggle="tooltip" data-placement="top" title="Choosing Between AWS Lambda and Fargate">&larr; Previous<span class="d-none d-md-inline">
+              Post</span></a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          
+          <li class="list-inline-item">
+            <a href="https://twitter.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/aaronwalker">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Aaron Walker 2023</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/startbootstrap-clean-blog/js/scripts.js"></script>
+
+<script src="/assets/scripts.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25009418-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-25009418-1');
+</script>
+
+
+
+</body>
+
+</html>

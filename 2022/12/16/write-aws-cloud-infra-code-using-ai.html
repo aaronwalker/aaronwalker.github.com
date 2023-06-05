@@ -85,22 +85,22 @@
 
 <p>Here is an example of how you can use ChatGPT to generate a CloudFormation template that creates an S3 bucket:</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">openai</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">openai</span>
 
 <span class="c1"># Authenticate with OpenAI
-</span><span class="n">openai</span><span class="p">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s">"YOUR_API_KEY"</span>
+</span><span class="n">openai</span><span class="p">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="sh">"</span><span class="s">YOUR_API_KEY</span><span class="sh">"</span>
 
 <span class="c1"># Define the prompt for ChatGPT
-</span><span class="n">prompt</span> <span class="o">=</span> <span class="s">'generate a cloud formation template that creates an S3 bucket'</span>
+</span><span class="n">prompt</span> <span class="o">=</span> <span class="sh">'</span><span class="s">generate a cloud formation template that creates an S3 bucket</span><span class="sh">'</span>
 
 <span class="c1"># Call the OpenAI API
-</span><span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="p">.</span><span class="n">Completion</span><span class="p">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">engine</span><span class="o">=</span><span class="s">'text-davinci-002'</span><span class="p">,</span>
+</span><span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="p">.</span><span class="n">Completion</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+    <span class="n">engine</span><span class="o">=</span><span class="sh">'</span><span class="s">text-davinci-002</span><span class="sh">'</span><span class="p">,</span>
     <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span>
 <span class="p">)</span>
 
 <span class="c1"># Print the generated CloudFormation template
-</span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s">'choices'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'text'</span><span class="p">])</span>
+</span><span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="sh">'</span><span class="s">choices</span><span class="sh">'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="sh">'</span><span class="s">text</span><span class="sh">'</span><span class="p">])</span>
 </code></pre></div></div>
 
 <p>Here is an example of what the output of the above code might look like:</p>
@@ -164,7 +164,7 @@ print(response['choices'][0]['text'])
         <div class="clearfix">
 
           
-          <a class="btn btn-primary float-left" href="/2020/12/04/quarkus-lambda-containers.html" data-toggle="tooltip" data-placement="top" title="How to Deploy a Quarkus Lambda Application using Lambda Containers">&larr; Previous<span class="d-none d-md-inline">
+          <a class="btn btn-primary float-left" href="/2021/02/15/hotwire-lambda.html" data-toggle="tooltip" data-placement="top" title="Using Hotwire in a Quarkus Application deployed to Lambda">&larr; Previous<span class="d-none d-md-inline">
               Post</span></a>
           
           
